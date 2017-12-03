@@ -12,8 +12,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import graduating.project.com.apm.object.Task;
 
 /**
  * Created by xmuSistone on 2016/9/19.
@@ -28,6 +31,7 @@ public class DetailActivity extends FragmentActivity {
     public static final String ADDRESS3_TRANSITION_NAME = "address3";
     public static final String ADDRESS4_TRANSITION_NAME = "address4";
     public static final String ADDRESS5_TRANSITION_NAME = "address5";
+    public static final String ADDRESS0_TRANSITION_NAME = "address0";
     public static final String RATINGBAR_TRANSITION_NAME = "ratingBar";
 
     public static final String HEAD1_TRANSITION_NAME = "head1";
@@ -35,9 +39,12 @@ public class DetailActivity extends FragmentActivity {
     public static final String HEAD3_TRANSITION_NAME = "head3";
     public static final String HEAD4_TRANSITION_NAME = "head4";
 
-    private View address1, address2, address3, address4, address5;
+    private TextView address0, address1, address3, address4, address5;
+    private View address2;
     private ImageView imageView;
     private RatingBar ratingBar;
+
+    private Task task;
 
     private LinearLayout listContainer;
     private static final String[] headStrs = {HEAD1_TRANSITION_NAME, HEAD2_TRANSITION_NAME, HEAD3_TRANSITION_NAME, HEAD4_TRANSITION_NAME};
@@ -48,12 +55,16 @@ public class DetailActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        // To retrieve object in second Activity
+        task = (Task) getIntent().getSerializableExtra("object");
+
         imageView = (ImageView) findViewById(R.id.image);
-        address1 = findViewById(R.id.address1);
+        address0 = (TextView) findViewById(R.id.address0);
+        address1 = (TextView) findViewById(R.id.address1);
         address2 = findViewById(R.id.address2);
-        address3 = findViewById(R.id.address3);
-        address4 = findViewById(R.id.address4);
-        address5 = findViewById(R.id.address5);
+        address3 = (TextView) findViewById(R.id.address3);
+        address4 = (TextView) findViewById(R.id.address4);
+        address5 = (TextView) findViewById(R.id.address5);
         ratingBar = (RatingBar) findViewById(R.id.rating);
         listContainer = (LinearLayout) findViewById(R.id.detail_list_container);
 
@@ -66,6 +77,12 @@ public class DetailActivity extends FragmentActivity {
 
         String imageUrl = getIntent().getStringExtra(EXTRA_IMAGE_URL);
         ImageLoader.getInstance().displayImage(imageUrl, imageView);
+
+        address0.setText(String.valueOf(task.getId()));
+        address1.setText(task.getTime_require());
+        address3.setText(task.getTime_created());
+        address4.setText(task.getName());
+        address5.setText("NO. " + String.valueOf(task.getCount()));
 
         ViewCompat.setTransitionName(imageView, IMAGE_TRANSITION_NAME);
         ViewCompat.setTransitionName(address1, ADDRESS1_TRANSITION_NAME);

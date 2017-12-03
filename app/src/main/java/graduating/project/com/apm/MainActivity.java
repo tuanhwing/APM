@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -21,15 +24,24 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import graduating.project.com.apm.callback.RequestCallback;
 import graduating.project.com.apm.exclass.CustPagerTransformer;
 import graduating.project.com.apm.model.MainHelper;
+import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.presenter.MainPresenter;
+import graduating.project.com.apm.request.MakeRequest;
+import graduating.project.com.apm.socket.SocketEvent;
+import graduating.project.com.apm.socket.SocketSingleton;
 import graduating.project.com.apm.view.MainView;
 
 
@@ -53,11 +65,16 @@ public class MainActivity extends FragmentActivity implements MainView{
     //temp
     @BindView(R.id.img_btn)
     ImageView temp;
+    @BindView(R.id.img_btn1)
+    ImageView temp1;
     private MainPagerAdapter mainPagerAdapter;
 
-    //
+    //Content Viewpager
     private List<CommonFragment> fragments = new ArrayList<>(); // 供ViewPager使用
-    private final String[] imageArray = {"assets://image1.jpg", "assets://image2.jpg", "assets://image3.jpg", "assets://image4.jpg", "assets://image5.jpg"};
+//    private final String[] imageArray = {"assets://image1.jpg", "assets://image2.jpg", "assets://image3.jpg", "assets://image4.jpg", "assets://image5.jpg"};
+
+    //Temp
+    SocketEvent socketEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +83,8 @@ public class MainActivity extends FragmentActivity implements MainView{
 
         ButterKnife.bind(this);
 
-        // 1. 沉浸式状态栏
+
+        // 1. Custom statusbar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -79,6 +97,7 @@ public class MainActivity extends FragmentActivity implements MainView{
             }
         }
 
+        //[START] Init MVP
         if (savedInstanceState != null) {
         }
         if (mainPresenter == null) {
@@ -87,97 +106,61 @@ public class MainActivity extends FragmentActivity implements MainView{
             }
             mainPresenter = new MainPresenter(this, mainHelper);
         }
-//        positionView = findViewById(R.id.position_view);
-        dealStatusBar(); // 调整状态栏高度
+        //[END] Init MVP
 
-        // 2. 初始化ImageLoader
+//        dealStatusBar(); // Fix height of statusbar
+        this.dealStatusBar();// Fix height of statusbar
+
+        // 2. Init ImageLoader
         initImageLoader();
 
-        // 3. 填充ViewPager
-        fillViewPager();
+        // 3. fill content for viewpager
+//        mainPresenter.getListTaskFromServer();
+//        fillViewPager();
 
         temp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"lol",Toast.LENGTH_SHORT).show();
-                fragments.add(new CommonFragment());
-                mainPagerAdapter.notifyDataSetChanged();
+//                fragments.add(new CommonFragment());
+//                mainPagerAdapter.notifyDataSetChanged();
             }
         });
-    }
 
-    /**
-     * 填充ViewPager
-     */
-    private void fillViewPager() {
-//        indicatorTv = (TextView) findViewById(R.id.indicator_tv);
-//        viewPager = (ViewPager) findViewById(R.id.viewpager);
-
-        // 1. viewPager添加parallax效果，使用PageTransformer就足够了
-        viewPager.setPageTransformer(false, new CustPagerTransformer(this));
-
-        // 2. viewPager添加adapter
-        for (int i = 0; i < 10; i++) {
-            // 预先准备10个fragment
-            fragments.add(new CommonFragment());
-        }
-
-        mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),fragments);
-        viewPager.setAdapter(mainPagerAdapter);
-//        viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-//            @Override
-//            public Fragment getItem(int position) {
-//                CommonFragment fragment = fragments.get(position % 10);
-//                fragment.bindData(imageArray[position % imageArray.length]);
-//                return fragment;
-//            }
-//
-//            @Override
-//            public int getCount() {
-//                return 2;
-//            }
-//        });
-
-
-        // 3. viewPager滑动时，调整指示器
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        temp1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
+            public void onClick(View v) {
+//                fragments.get(0).updateTimerequire("lol");
+                MakeRequest.makingRequest("http://10.69.225.76:8080/api/task", Request.Method.GET, null, new RequestCallback() {
+                    @Override
+                    public void onGetSuccess(JSONArray array) throws JSONException {
+                        Gson gson = new Gson();
+                        for(int i=0; i < array.length(); i++){
+                            JSONObject object = array.getJSONObject(i);
+                            Log.d("VOLLEY_call",String.valueOf(object));
+                            Task task = gson.fromJson(object.toString(),Task.class);
+                            Log.d("VOLLEY_call",String.valueOf(task.getTime_created()));
+                        }
 
-            @Override
-            public void onPageSelected(int position) {
-                updateIndicatorTv();
-            }
+                    }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+                    @Override
+                    public void onPostSuccess(JSONObject response) {
+                        Log.d("request_AAA",String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                       Log.d("request_AAA",error);
+                    }
+                });
 
             }
         });
 
-        updateIndicatorTv();
-    }
-
-    /**
-     * 更新指示器
-     */
-    private void updateIndicatorTv() {
-        int totalNum = viewPager.getAdapter().getCount();
-        int currentItem = viewPager.getCurrentItem() + 1;
-        indicatorTv.setText(Html.fromHtml("<font color='#12edf0'>" + currentItem + "</font>  /  " + totalNum));
-    }
-
-    /**
-     * 调整沉浸式菜单的title
-     */
-    private void dealStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int statusBarHeight = getStatusBarHeight();
-            ViewGroup.LayoutParams lp = positionView.getLayoutParams();
-            lp.height = statusBarHeight;
-            positionView.setLayoutParams(lp);
-        }
+        SocketSingleton.getInstance().getSocket().connect();
+        socketEvent = new SocketEvent(MainActivity.this,mainPresenter);
+        SocketSingleton.getInstance().getSocket().on("send-list-tasks-to-client",socketEvent.getOnNewTask());
     }
 
     private int getStatusBarHeight() {
@@ -222,6 +205,69 @@ public class MainActivity extends FragmentActivity implements MainView{
         // 2.单例ImageLoader类的初始化
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(config);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        SocketSingleton.getInstance().getSocket().disconnect();
+        SocketSingleton.getInstance().getSocket().off("send-list-tasks-to-client", socketEvent.getOnNewTask());
+    }
+
+    @Override
+    public void dealStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int statusBarHeight = getStatusBarHeight();
+            ViewGroup.LayoutParams lp = positionView.getLayoutParams();
+            lp.height = statusBarHeight;
+            positionView.setLayoutParams(lp);
+        }
+    }
+
+    @Override
+    public void fillTasksIntoViewPager(List<Task> tasks) {
+        for(Task temp : tasks){
+            fragments.add(new CommonFragment(temp));
+        }
+
+        // 1. viewPager添加parallax效果，使用PageTransformer就足够了
+        viewPager.setPageTransformer(false, new CustPagerTransformer(this));
+
+        mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),fragments);
+        viewPager.setAdapter(mainPagerAdapter);
+
+
+        // 3. viewPager滑动时，调整指示器
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateIndicatorTv();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+//        this.updateIndicatorTv();
+    }
+
+    @Override
+    public void updateIndicatorTv() {
+        int totalNum = viewPager.getAdapter().getCount();
+        int currentItem = viewPager.getCurrentItem() + 1;
+        indicatorTv.setText(Html.fromHtml("<font color='#12edf0'>" + currentItem + "</font>  /  " + totalNum));
+    }
+
+    @Override
+    public void showErrorLoadTask(String error) {
+        Toast.makeText(MainActivity.this, error,Toast.LENGTH_LONG).show();
     }
 
 }

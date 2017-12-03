@@ -13,6 +13,13 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
+        <TextView
+            android:id="@+id/address0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="#34495e"
+            android:textSize="25sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -23,13 +30,14 @@
             android:paddingRight="20dp"
             android:paddingTop="5dp">
 
+
             <TextView
                 android:id="@+id/address1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="NORTH LAT"
-                android:textColor="#12edf0"
+                android:textColor="#e74c3c"
                 android:textSize="15sp" />
 
             <ImageView
@@ -47,7 +55,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="EAST LNG 17"
-                android:textColor="#12edf0"
+                android:textColor="#e74c3c"
                 android:textSize="13sp" />
 
         </RelativeLayout>
