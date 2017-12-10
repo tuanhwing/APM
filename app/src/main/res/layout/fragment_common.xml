@@ -30,7 +30,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/address4"
+                    android:id="@+id/tv_other_require"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -50,14 +50,24 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.rey.material.widget.Slider
                         android:id="@+id/address5"
-                        android:layout_width="0dp"
+                        app:sl_minValue="0"
+                        app:sl_maxValue="100"
+                        app:sl_value="50"
+                        style="@style/Material.Widget.Slider"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="NO. 7911847"
-                        android:textColor="#333"
-                        android:textSize="15sp" />
+                        android:gravity="center" />
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/address5"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:text="NO. 7911847"-->
+                        <!--android:textColor="#333"-->
+                        <!--android:textSize="15sp" />-->
 
                     <RatingBar
                         android:id="@+id/rating"
@@ -146,7 +156,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY" />
             <TextView
-                android:id="@+id/address0"
+                android:id="@+id/tv_taskid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -160,7 +170,7 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/address1"
+                    android:id="@+id/tv_time_require"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -177,7 +187,7 @@
                     android:src="@drawable/gps" />
 
                 <TextView
-                    android:id="@+id/address3"
+                    android:id="@+id/tv_time_create"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

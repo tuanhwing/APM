@@ -23,7 +23,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        CommonFragment fragment = fragments.get(position % 10);
+        CommonFragment fragment = fragments.get(position);
         fragment.bindData(imageArray[position % imageArray.length]);
         return fragment;
     }

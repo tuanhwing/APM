@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import graduating.project.com.apm.callback.OnJsonToTaskCompleted;
+import graduating.project.com.apm.callback.OnJsonToTasksCompleted;
 import graduating.project.com.apm.object.Task;
 
 /**
@@ -20,9 +20,9 @@ import graduating.project.com.apm.object.Task;
  */
 
 public class JSONGetTask extends AsyncTask<Object, Void, List<Task>> {
-    private OnJsonToTaskCompleted listener;
+    private OnJsonToTasksCompleted listener;
 
-    public JSONGetTask(OnJsonToTaskCompleted listener){
+    public JSONGetTask(OnJsonToTasksCompleted listener){
         this.listener = listener;
     }
     @Override
@@ -40,7 +40,7 @@ public class JSONGetTask extends AsyncTask<Object, Void, List<Task>> {
                     tasks.add(gson.fromJson(object.toString(), Task.class));
                 }
             } catch (JSONException e) {
-                listener.onJsonToTaskFailed(e.getMessage());
+                listener.onJsonToTasksFailed(e.getMessage());
             }
         }
         return tasks;
@@ -54,7 +54,7 @@ public class JSONGetTask extends AsyncTask<Object, Void, List<Task>> {
     @Override
     protected void onPostExecute(List<Task> tasks) {
         super.onPostExecute(tasks);
-        listener.onJsonToTaskCompleted(tasks);
+        listener.onJsonToTasksCompleted(tasks);
     }
 
     @Override

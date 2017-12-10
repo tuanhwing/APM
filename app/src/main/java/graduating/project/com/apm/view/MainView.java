@@ -16,4 +16,6 @@ public interface MainView {
     void updateIndicatorTv();
 
     void showErrorLoadTask(String error);
+
+    void addNewTaskIntoAdapter(Task task);
 }

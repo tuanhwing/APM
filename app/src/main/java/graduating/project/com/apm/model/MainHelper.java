@@ -1,9 +1,9 @@
 package graduating.project.com.apm.model;
 
-import android.util.Log;
-
 import graduating.project.com.apm.callback.MainResult;
 import graduating.project.com.apm.callback.OnJsonToTaskCompleted;
+import graduating.project.com.apm.callback.OnJsonToTasksCompleted;
+import graduating.project.com.apm.exclass.AsyncJsonTask;
 import graduating.project.com.apm.exclass.JSONGetTask;
 
 /**
@@ -54,10 +54,11 @@ public class MainHelper {
 //        return results;
     }
 
-    public void convertJsonToTasks(OnJsonToTaskCompleted listener, Object... objects){
-        Log.d("json_async_aaa","mdel1");
+    public void convertJsonToTasks(OnJsonToTasksCompleted listener, Object... objects){
         new JSONGetTask(listener).execute(objects);
-        Log.d("json_async_aaa","mdel2");
     }
 
+    public void convertJsonToTask(OnJsonToTaskCompleted listener, Object... objects){
+        new AsyncJsonTask(listener).execute(objects);
+    }
 }

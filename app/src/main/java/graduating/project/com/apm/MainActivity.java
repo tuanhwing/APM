@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.google.gson.Gson;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -24,22 +22,16 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import graduating.project.com.apm.callback.RequestCallback;
 import graduating.project.com.apm.exclass.CustPagerTransformer;
 import graduating.project.com.apm.model.MainHelper;
 import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.presenter.MainPresenter;
-import graduating.project.com.apm.request.MakeRequest;
 import graduating.project.com.apm.socket.SocketEvent;
 import graduating.project.com.apm.socket.SocketSingleton;
 import graduating.project.com.apm.view.MainView;
@@ -83,7 +75,6 @@ public class MainActivity extends FragmentActivity implements MainView{
 
         ButterKnife.bind(this);
 
-
         // 1. Custom statusbar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -115,52 +106,16 @@ public class MainActivity extends FragmentActivity implements MainView{
         initImageLoader();
 
         // 3. fill content for viewpager
-//        mainPresenter.getListTaskFromServer();
-//        fillViewPager();
+        mainPresenter.getListTaskFromServer();
 
-        temp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"lol",Toast.LENGTH_SHORT).show();
-//                fragments.add(new CommonFragment());
-//                mainPagerAdapter.notifyDataSetChanged();
-            }
-        });
 
-        temp1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                fragments.get(0).updateTimerequire("lol");
-                MakeRequest.makingRequest("http://10.69.225.76:8080/api/task", Request.Method.GET, null, new RequestCallback() {
-                    @Override
-                    public void onGetSuccess(JSONArray array) throws JSONException {
-                        Gson gson = new Gson();
-                        for(int i=0; i < array.length(); i++){
-                            JSONObject object = array.getJSONObject(i);
-                            Log.d("VOLLEY_call",String.valueOf(object));
-                            Task task = gson.fromJson(object.toString(),Task.class);
-                            Log.d("VOLLEY_call",String.valueOf(task.getTime_created()));
-                        }
-
-                    }
-
-                    @Override
-                    public void onPostSuccess(JSONObject response) {
-                        Log.d("request_AAA",String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                       Log.d("request_AAA",error);
-                    }
-                });
-
-            }
-        });
-
-        SocketSingleton.getInstance().getSocket().connect();
+        Log.d("json_async_aaa","activity1");
         socketEvent = new SocketEvent(MainActivity.this,mainPresenter);
-        SocketSingleton.getInstance().getSocket().on("send-list-tasks-to-client",socketEvent.getOnNewTask());
+        SocketSingleton.getInstance().getSocket().on("send-list-tasks-to-client",socketEvent.getOnListTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-new-task-to-all",socketEvent.getNewTask());
+        SocketSingleton.getInstance().getSocket().connect();
+        SocketSingleton.getInstance().getSocket().emit("get-list-task");
+        Log.d("json_async_aaa","activity2");
     }
 
     private int getStatusBarHeight() {
@@ -208,11 +163,18 @@ public class MainActivity extends FragmentActivity implements MainView{
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
         SocketSingleton.getInstance().getSocket().disconnect();
-        SocketSingleton.getInstance().getSocket().off("send-list-tasks-to-client", socketEvent.getOnNewTask());
+        SocketSingleton.getInstance().getSocket().off("send-list-tasks-to-client", socketEvent.getOnListTask());
+        SocketSingleton.getInstance().getSocket().off("server-send-new-task-to-all",socketEvent.getNewTask());
     }
 
     @Override
@@ -268,6 +230,13 @@ public class MainActivity extends FragmentActivity implements MainView{
     @Override
     public void showErrorLoadTask(String error) {
         Toast.makeText(MainActivity.this, error,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void addNewTaskIntoAdapter(Task task) {
+        fragments.add(new CommonFragment(task));
+        mainPagerAdapter.notifyDataSetChanged();
+        this.updateIndicatorTv();
     }
 
 }

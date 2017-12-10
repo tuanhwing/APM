@@ -1,6 +1,7 @@
 package graduating.project.com.apm.object;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Tuan on 27/11/2017.
@@ -24,11 +25,31 @@ public class Task implements Serializable {
     private String copy_paper_type;
     private String other_require;
     private String file;
+    private List<Issue> issues;
+    private List<Assign> assigns;
 
     public Task() {
     }
 
-    public Task(int id, String time_require, int status, String time_created, String name, int count, String cover_color, String cover_paper, String size, String paper_color, String paper_type, String bookbinding_type, String copy_count, String copy_color, String copy_paper_type, String other_require, String file) {
+    public Task(int id,
+                String time_require,
+                int status,
+                String time_created,
+                String name,
+                int count,
+                String cover_color,
+                String cover_paper,
+                String size,
+                String paper_color,
+                String paper_type,
+                String bookbinding_type,
+                String copy_count,
+                String copy_color,
+                String copy_paper_type,
+                String other_require,
+                String file,
+                List<Issue> issues,
+                List<Assign> assigns) {
         this.id = id;
         this.time_require = time_require;
         this.status = status;
@@ -46,6 +67,8 @@ public class Task implements Serializable {
         this.copy_paper_type = copy_paper_type;
         this.other_require = other_require;
         this.file = file;
+        this.issues = issues;
+        this.assigns = assigns;
     }
 
     public int getId() {
@@ -182,5 +205,21 @@ public class Task implements Serializable {
 
     public void setFile(String file) {
         this.file = file;
+    }
+
+    public List<Issue> getIssues() {
+        return issues;
+    }
+
+    public void setIssues(List<Issue> issues) {
+        this.issues = issues;
+    }
+
+    public List<Assign> getAssigns() {
+        return assigns;
+    }
+
+    public void setAssigns(List<Assign> assigns) {
+        this.assigns = assigns;
     }
 }
