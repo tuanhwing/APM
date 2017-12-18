@@ -16,17 +16,12 @@ public class Task implements Serializable {
     private int count;
     private String cover_color;
     private String cover_paper;
-    private String size;
-    private String paper_color;
-    private String paper_type;
     private String bookbinding_type;
-    private String copy_count;
-    private String copy_color;
-    private String copy_paper_type;
+    private String paper_info;
     private String other_require;
     private String file;
     private List<Issue> issues;
-    private List<Assign> assigns;
+    private List<Assign> assign;
 
     public Task() {
     }
@@ -39,17 +34,12 @@ public class Task implements Serializable {
                 int count,
                 String cover_color,
                 String cover_paper,
-                String size,
-                String paper_color,
-                String paper_type,
                 String bookbinding_type,
-                String copy_count,
-                String copy_color,
-                String copy_paper_type,
+                String paper_info,
                 String other_require,
                 String file,
                 List<Issue> issues,
-                List<Assign> assigns) {
+                List<Assign> assign) {
         this.id = id;
         this.time_require = time_require;
         this.status = status;
@@ -58,17 +48,12 @@ public class Task implements Serializable {
         this.count = count;
         this.cover_color = cover_color;
         this.cover_paper = cover_paper;
-        this.size = size;
-        this.paper_color = paper_color;
-        this.paper_type = paper_type;
         this.bookbinding_type = bookbinding_type;
-        this.copy_count = copy_count;
-        this.copy_color = copy_color;
-        this.copy_paper_type = copy_paper_type;
+        this.paper_info = paper_info;
         this.other_require = other_require;
         this.file = file;
         this.issues = issues;
-        this.assigns = assigns;
+        this.assign = assign;
     }
 
     public int getId() {
@@ -135,30 +120,6 @@ public class Task implements Serializable {
         this.cover_paper = cover_paper;
     }
 
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public String getPaper_color() {
-        return paper_color;
-    }
-
-    public void setPaper_color(String paper_color) {
-        this.paper_color = paper_color;
-    }
-
-    public String getPaper_type() {
-        return paper_type;
-    }
-
-    public void setPaper_type(String paper_type) {
-        this.paper_type = paper_type;
-    }
-
     public String getBookbinding_type() {
         return bookbinding_type;
     }
@@ -167,28 +128,12 @@ public class Task implements Serializable {
         this.bookbinding_type = bookbinding_type;
     }
 
-    public String getCopy_count() {
-        return copy_count;
+    public String getPaper_info() {
+        return paper_info;
     }
 
-    public void setCopy_count(String copy_count) {
-        this.copy_count = copy_count;
-    }
-
-    public String getCopy_color() {
-        return copy_color;
-    }
-
-    public void setCopy_color(String copy_color) {
-        this.copy_color = copy_color;
-    }
-
-    public String getCopy_paper_type() {
-        return copy_paper_type;
-    }
-
-    public void setCopy_paper_type(String copy_paper_type) {
-        this.copy_paper_type = copy_paper_type;
+    public void setPaper_info(String paper_info) {
+        this.paper_info = paper_info;
     }
 
     public String getOther_require() {
@@ -215,11 +160,11 @@ public class Task implements Serializable {
         this.issues = issues;
     }
 
-    public List<Assign> getAssigns() {
-        return assigns;
+    public List<Assign> getAssign() {
+        return assign;
     }
 
-    public void setAssigns(List<Assign> assigns) {
-        this.assigns = assigns;
+    public void setAssign(List<Assign> assign) {
+        this.assign = assign;
     }
 }

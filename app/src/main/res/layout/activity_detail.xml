@@ -15,14 +15,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
+
         <TextView
             android:id="@+id/tv_taskid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_centerVertical="true"
+            android:layout_marginTop="20dp"
             android:textColor="#ecf0f1"
             android:textSize="25sp" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,94 +33,71 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="5dp">
+
             <LinearLayout
                 android:id="@+id/temp0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:id="@+id/tv_name"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#FFFFFF" />
+
                 <TextView
                     android:id="@+id/tv_count"
-                    android:textAlignment="textEnd"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="textEnd"
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
+
             <View
                 android:id="@+id/view0"
-                android:layout_below="@+id/temp0"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:layout_below="@+id/temp0"
                 android:layout_marginTop="5dp"
                 android:background="#f0f0f0" />
+
             <LinearLayout
                 android:id="@+id/temp1"
-                android:layout_below="@id/view0"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/view0">
+
                 <TextView
                     android:id="@+id/tv_cover_color"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#FFFFFF" />
+
                 <TextView
                     android:id="@+id/tv_cover_paper"
-                    android:textAlignment="textEnd"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="textEnd"
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
+
             <View
                 android:id="@+id/view1"
-                android:layout_below="@+id/temp1"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:layout_below="@+id/temp1"
                 android:layout_marginTop="5dp"
                 android:background="#f0f0f0" />
+
             <LinearLayout
                 android:id="@+id/temp2"
-                android:layout_below="@+id/view1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tv_paper_color"
-                android:layout_weight="1"
-                android:textColor="#FFFFFF"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/tv_paper_type"
-                android:textAlignment="textEnd"
-                android:layout_weight="1"
-                android:textColor="#FFFFFF"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            </LinearLayout>
-            <View
-                android:id="@+id/view2"
-                android:layout_below="@+id/temp2"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginTop="5dp"
-                android:background="#f0f0f0" />
-            <LinearLayout
-                android:id="@+id/temp3"
-                android:layout_below="@+id/view2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/tv_size"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view1">
 
                 <TextView
                     android:id="@+id/tv_bookbinding_type"
@@ -127,59 +106,71 @@
                     android:layout_weight="1"
                     android:textAlignment="textEnd"
                     android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/tv_paper_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="textEnd"
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_below="@+id/temp2"
+                android:layout_marginTop="5dp"
+                android:background="#f0f0f0" />
+
+            <LinearLayout
+                android:id="@+id/temp3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view2">
+                <TextView
+                    android:id="@+id/tv_other_require"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
             <View
                 android:id="@+id/view3"
-                android:layout_below="@+id/temp3"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:layout_below="@+id/temp3"
                 android:layout_marginTop="5dp"
                 android:background="#f0f0f0" />
+
             <LinearLayout
                 android:id="@+id/temp4"
-                android:layout_below="@+id/view3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/tv_copy_count"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/tv_copy_color"
-                    android:textAlignment="textEnd"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <View
-                android:id="@+id/view4"
-                android:layout_below="@+id/temp4"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginTop="5dp"
-                android:background="#f0f0f0" />
-            <LinearLayout
-                android:id="@+id/temp5"
-                android:layout_below="@+id/view4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/tv_copy_paper_type"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view3">
+
                 <TextView
                     android:id="@+id/tv_file"
-                    android:textAlignment="textEnd"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#FFFFFF" />
+
+
             </LinearLayout>
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_below="@+id/temp3"
+                android:layout_marginTop="5dp"
+                android:background="#f0f0f0" />
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -196,11 +187,11 @@
                 android:id="@+id/tv_time_require"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#e74c3c"
-                android:textSize="15sp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:textColor="#e74c3c"
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/address2"
@@ -214,11 +205,11 @@
                 android:id="@+id/tv_time_create"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#e74c3c"
-                android:textSize="13sp"
-                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_centerVertical="true"
+                android:textColor="#e74c3c"
+                android:textSize="13sp" />
 
         </RelativeLayout>
 
@@ -234,21 +225,50 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/paper_background"
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
-                    android:id="@+id/tv_other_require"
-                    android:layout_width="match_parent"
+                <RadioGroup
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:id="@+id/radioGroup"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="#333"
-                    android:textSize="15sp" />
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rd_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New"
+                        android:textSize="18sp"/>
+
+                    <RadioButton
+                        android:id="@+id/rd_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Progress"
+                        android:textSize="18sp"/>
+
+                    <RadioButton
+                        android:id="@+id/rd_3"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Completed"
+                        android:textSize="18sp"/>
+                </RadioGroup>
+
+
+                <Button
+                    android:id="@+id/btn_assign"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="assign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <!--<TextView-->
                 <!--android:id="@+id/address5"-->
@@ -260,6 +280,7 @@
                 <!-- use Material.Widget.Slider.Discrete style for discrete mode -->
                 <com.rey.material.widget.Slider
                     android:id="@+id/address5"
+                    android:layout_below="@id/radioGroup"
                     style="@style/Material.Widget.Slider.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -270,6 +291,7 @@
 
                 <RatingBar
                     android:id="@+id/rating"
+                    android:layout_below="@+id/address5"
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -277,7 +299,7 @@
                     android:numStars="5"
                     android:rating="4.5" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
             <LinearLayout

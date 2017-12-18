@@ -68,6 +68,7 @@
         android:textColor="#ffffff"
         android:textSize="16sp" />
 
+
     <!--4. 顶部的titleBar-->
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -82,32 +83,53 @@
             android:layout_width="1px"
             android:layout_height="1px" />
 
+
+
         <RelativeLayout
+            android:id="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:orientation="horizontal">
+            <RelativeLayout
+                android:id="@+id/rl_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/search_view"
+                    style="@style/SearchViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
 
-            <View
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/search" />
+            <RelativeLayout
+                android:id="@+id/rl_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <View
+                    android:id="@+id/v_search"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/search" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="INTEREST"
-                android:textColor="#ffffff" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="TASKS"
+                    android:textColor="#ffffff" />
 
-            <View
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/close" />
+                <View
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/close" />
+
+            </RelativeLayout>
+
 
         </RelativeLayout>
 

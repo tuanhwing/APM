@@ -12,38 +12,38 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import graduating.project.com.apm.callback.OnJsonToTasksCompleted;
-import graduating.project.com.apm.object.Task;
+import graduating.project.com.apm.callback.OnJsonToStaffsCompleted;
+import graduating.project.com.apm.object.Staff;
 
 /**
- * Created by Tuan on 30/11/2017.
+ * Created by Tuan on 12/12/2017.
  */
 
-public class JSONGetTask extends AsyncTask<Object, Void, List<Task>> {
-    private OnJsonToTasksCompleted listener;
+public class JSONGetListStaffs extends AsyncTask<Object, Void, List<Staff>> {
 
-    public JSONGetTask(OnJsonToTasksCompleted listener){
+    private OnJsonToStaffsCompleted listener;
+
+    public JSONGetListStaffs(OnJsonToStaffsCompleted listener){
         this.listener = listener;
     }
     @Override
-    protected List<Task> doInBackground(Object... params) {
-        List<Task> tasks = new ArrayList<Task>();
+    protected List<Staff> doInBackground(Object... params) {
+        List<Staff> staffs = new ArrayList<>();
         Gson gson = new Gson();
         for (Object temp : params){
-            JSONObject data = (JSONObject) temp;
             try {
-                JSONArray array = new JSONArray(data.getString("content"));
+                JSONArray array = new JSONArray(temp.toString());
                 Log.d("json_async_aaa",String.valueOf(array));
                 for(int i=0; i < array.length(); i++) {
                     JSONObject object = array.getJSONObject(i);
                     Log.d("json_async_aaa", String.valueOf(object));
-                    tasks.add(gson.fromJson(object.toString(), Task.class));
+                    staffs.add(gson.fromJson(object.toString(), Staff.class));
                 }
             } catch (JSONException e) {
-                listener.onJsonToTasksFailed(e.getMessage());
+                listener.onJsonToStaffsFailed(e.getMessage());
             }
         }
-        return tasks;
+        return staffs;
     }
 
     @Override
@@ -52,9 +52,9 @@ public class JSONGetTask extends AsyncTask<Object, Void, List<Task>> {
     }
 
     @Override
-    protected void onPostExecute(List<Task> tasks) {
-        super.onPostExecute(tasks);
-        listener.onJsonToTasksCompleted(tasks);
+    protected void onPostExecute(List<Staff> staffs) {
+        super.onPostExecute(staffs);
+        listener.onJsonToStaffsCompleted(staffs);
     }
 
     @Override

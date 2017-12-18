@@ -1,10 +1,12 @@
 package graduating.project.com.apm.model;
 
 import graduating.project.com.apm.callback.MainResult;
+import graduating.project.com.apm.callback.OnJsonToStaffsCompleted;
 import graduating.project.com.apm.callback.OnJsonToTaskCompleted;
 import graduating.project.com.apm.callback.OnJsonToTasksCompleted;
 import graduating.project.com.apm.exclass.AsyncJsonTask;
-import graduating.project.com.apm.exclass.JSONGetTask;
+import graduating.project.com.apm.exclass.JSONGetListStaffs;
+import graduating.project.com.apm.exclass.JSONGetListTasks;
 
 /**
  * Created by Tuan on 19/11/2017.
@@ -23,6 +25,7 @@ public class MainHelper {
      * @return
      */
     public void getListTaskFromServer(){
+
 
 //        MakeRequest.makingRequest("http://10.69.225.76:8080/api/task", Request.Method.GET, null, new RequestCallback() {
 //            @Override
@@ -54,8 +57,12 @@ public class MainHelper {
 //        return results;
     }
 
-    public void convertJsonToTasks(OnJsonToTasksCompleted listener, Object... objects){
-        new JSONGetTask(listener).execute(objects);
+    public void convertJsonToListTasks(OnJsonToTasksCompleted listener, Object... objects){
+        new JSONGetListTasks(listener).execute(objects);
+    }
+
+    public void convertJsonToListStaffs(OnJsonToStaffsCompleted listener, Object... objects){
+        new JSONGetListStaffs(listener).execute(objects);
     }
 
     public void convertJsonToTask(OnJsonToTaskCompleted listener, Object... objects){

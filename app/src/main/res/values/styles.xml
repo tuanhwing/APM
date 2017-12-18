@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="searchHintIcon">@drawable/search</item>
+        <item name="closeIcon">@drawable/close</item>
+    </style>
+
 </resources>

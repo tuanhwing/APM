@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,11 @@ import graduating.project.com.apm.view.CommonView;
  */
 public class CommonFragment extends Fragment implements DragLayout.GotoDetailListener, CommonView {
     private ImageView imageView;
-    private TextView tvTaskId, tvTimeRequire, tvTimeCreate, tvOtherRequire;
+    private TextView tvTaskId, tvTimeRequire, tvTimeCreate, tvStatus;
     private Slider address5;
     private View address2;
     private RatingBar ratingBar;
+    private ImageView imgStatus;
     private View head1, head2, head3, head4;
     private String imageUrl;
 
@@ -38,6 +40,10 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
 
     public CommonFragment(Task task){
         this.task = task;
+    }
+
+    public Task getTask() {
+        return task;
     }
 
     @Nullable
@@ -51,8 +57,9 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         tvTimeRequire = (TextView) dragLayout.findViewById(R.id.tv_time_require);
         address2 = dragLayout.findViewById(R.id.address2);
         tvTimeCreate = (TextView) dragLayout.findViewById(R.id.tv_time_create);
-        tvOtherRequire = (TextView) dragLayout.findViewById(R.id.tv_other_require);
+        tvStatus = (TextView) dragLayout.findViewById(R.id.tv_status);
         address5 = (Slider) dragLayout.findViewById(R.id.address5);
+        imgStatus = (ImageView) dragLayout.findViewById(R.id.img_status);
         ratingBar = (RatingBar) dragLayout.findViewById(R.id.rating);
 
         this.fillContentFragment();
@@ -75,7 +82,7 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
                 new Pair(tvTimeRequire, DetailActivity.TIME_REQUIRE_TRANSITION_NAME),
                 new Pair(address2, DetailActivity.ADDRESS2_TRANSITION_NAME),
                 new Pair(tvTimeCreate, DetailActivity.TIME_CREATE_TRANSITION_NAME),
-                new Pair(tvOtherRequire, DetailActivity.OTHER_REQUIRE_TRANSITION_NAME),
+//                new Pair(tvOtherRequire, DetailActivity.OTHER_REQUIRE_TRANSITION_NAME),
                 new Pair(address5, DetailActivity.ADDRESS5_TRANSITION_NAME),
                 new Pair(ratingBar, DetailActivity.RATINGBAR_TRANSITION_NAME),
                 new Pair(head1, DetailActivity.HEAD1_TRANSITION_NAME),
@@ -95,6 +102,7 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
 
     @Override
     public void updateTimerequire(String timeRequire) {
+        this.task.setTime_require(timeRequire);
         tvTimeRequire.setText(timeRequire);
     }
 
@@ -103,6 +111,36 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         tvTaskId.setText(String.valueOf(task.getId()));
         tvTimeRequire.setText(task.getTime_require());
         tvTimeCreate.setText(task.getTime_created());
-        tvOtherRequire.setText(task.getOther_require());
+        this.showingStatus();
+
     }
+
+    @Override
+    public void showingStatus() {
+        switch (task.getStatus()){
+            case 0: {
+                tvStatus.setText("New");
+                imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_new));
+                break;
+            }
+            case 1: {
+                tvStatus.setText("Progress");
+                imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_problem));
+                break;
+            }
+            case 2: {
+                tvStatus.setText("Completed");
+                imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_completed));
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void updateStatusTask(int status) {
+        this.task.setStatus(status);
+        this.showingStatus();
+        Log.d("lol_statustask","fragment");
+    }
+
 }

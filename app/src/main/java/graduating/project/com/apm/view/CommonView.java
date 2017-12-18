@@ -9,4 +9,9 @@ public interface CommonView {
     void updateTimerequire(String timeRequire);
 
     void fillContentFragment();
+
+    void showingStatus();
+
+    void updateStatusTask(int status);
+
 }

@@ -5,12 +5,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.text.Html;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +34,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import graduating.project.com.apm.exclass.CustPagerTransformer;
 import graduating.project.com.apm.model.MainHelper;
+import graduating.project.com.apm.object.Issue;
+import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.presenter.MainPresenter;
 import graduating.project.com.apm.socket.SocketEvent;
@@ -59,6 +65,10 @@ public class MainActivity extends FragmentActivity implements MainView{
     ImageView temp;
     @BindView(R.id.img_btn1)
     ImageView temp1;
+    @BindView(R.id.search_view)
+    SearchView searchView;
+
+
     private MainPagerAdapter mainPagerAdapter;
 
     //Content Viewpager
@@ -67,6 +77,16 @@ public class MainActivity extends FragmentActivity implements MainView{
 
     //Temp
     SocketEvent socketEvent;
+    public static List<Staff> staffs = new ArrayList<>();
+
+    @BindView(R.id.rl_search)
+    RelativeLayout rlSearch;
+    @BindView(R.id.v_search)
+    View vSearch;
+    @BindView(R.id.rl_toolbar)
+    RelativeLayout rlToolbar;
+    @BindView(R.id.search_container)
+    ViewGroup searchContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,16 +126,48 @@ public class MainActivity extends FragmentActivity implements MainView{
         initImageLoader();
 
         // 3. fill content for viewpager
-        mainPresenter.getListTaskFromServer();
+//        mainPresenter.getListTaskFromServer();
+
+        //temp searchview
+        rlSearch.setVisibility(View.GONE);
+        ((EditText)  searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text))
+                .setTextColor(getResources().getColor(R.color.whiteInit));
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {// API >= 14
+                    TransitionManager.beginDelayedTransition(searchContainer);
+                }
+                rlSearch.setVisibility(View.GONE);
+                rlToolbar.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+//        searchView.setVisibility(View.VISIBLE);
+        vSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {// API >= 14
+                    TransitionManager.beginDelayedTransition(searchContainer);
+                }
+                rlSearch.setVisibility(View.VISIBLE);
+                rlToolbar.setVisibility(View.GONE);
+                searchView.setIconified(false);
+            }
+        });
 
 
-        Log.d("json_async_aaa","activity1");
+
         socketEvent = new SocketEvent(MainActivity.this,mainPresenter);
         SocketSingleton.getInstance().getSocket().on("send-list-tasks-to-client",socketEvent.getOnListTask());
-        SocketSingleton.getInstance().getSocket().on("server-send-new-task-to-all",socketEvent.getNewTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-list-staff", socketEvent.getOnListStaffs());
+        SocketSingleton.getInstance().getSocket().on("server-send-new-task-to-all",socketEvent.getOnNewTask());
+        SocketSingleton.getInstance().getSocket().on("connect-ok", socketEvent.getOnConnected());
+        SocketSingleton.getInstance().getSocket().on("error-update-status-task", socketEvent.getOnErrorUpdateStatus());
+        SocketSingleton.getInstance().getSocket().on("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-assign-to-all", socketEvent.getOnAssignTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-issue-to-all", socketEvent.getOnNewIssue());
         SocketSingleton.getInstance().getSocket().connect();
-        SocketSingleton.getInstance().getSocket().emit("get-list-task");
-        Log.d("json_async_aaa","activity2");
     }
 
     private int getStatusBarHeight() {
@@ -165,7 +217,6 @@ public class MainActivity extends FragmentActivity implements MainView{
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -174,7 +225,13 @@ public class MainActivity extends FragmentActivity implements MainView{
 
         SocketSingleton.getInstance().getSocket().disconnect();
         SocketSingleton.getInstance().getSocket().off("send-list-tasks-to-client", socketEvent.getOnListTask());
-        SocketSingleton.getInstance().getSocket().off("server-send-new-task-to-all",socketEvent.getNewTask());
+        SocketSingleton.getInstance().getSocket().off("server-send-new-task-to-all",socketEvent.getOnNewTask());
+        SocketSingleton.getInstance().getSocket().off("connect-ok", socketEvent.getOnConnected());
+        SocketSingleton.getInstance().getSocket().off("error-update-status-task", socketEvent.getOnErrorUpdateStatus());
+        SocketSingleton.getInstance().getSocket().off("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
+        SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all", socketEvent.getOnAssignTask());
+        SocketSingleton.getInstance().getSocket().off("server-send-issue-to-all", socketEvent.getOnNewIssue());
+
     }
 
     @Override
@@ -189,6 +246,7 @@ public class MainActivity extends FragmentActivity implements MainView{
 
     @Override
     public void fillTasksIntoViewPager(List<Task> tasks) {
+        fragments = new ArrayList<>();
         for(Task temp : tasks){
             fragments.add(new CommonFragment(temp));
         }
@@ -234,9 +292,65 @@ public class MainActivity extends FragmentActivity implements MainView{
 
     @Override
     public void addNewTaskIntoAdapter(Task task) {
-        fragments.add(new CommonFragment(task));
-        mainPagerAdapter.notifyDataSetChanged();
+        if(fragments.size() == 0){
+            List<Task> temp = new ArrayList<>();
+            temp.add(task);
+            this.fillTasksIntoViewPager(temp);
+        }else {
+            fragments.add(new CommonFragment(task));
+            mainPagerAdapter.notifyDataSetChanged();
+        }
         this.updateIndicatorTv();
     }
+
+    @Override
+    public void updateStatusTask(int taskid, int status) {
+        int i=0;
+        while(true){
+            if(fragments.get(i).getTask().getId() == taskid){
+                fragments.get(i).getTask().setStatus(status);
+                fragments.get(i).showingStatus();
+                break;
+            }
+            i++;
+        }
+    }
+
+    @Override
+    public void updateAssignTask(int taskid, int status) {
+        int i=0;
+        while(true){
+            if(i >= fragments.size()) break;
+            if(fragments.get(i).getTask().getId() == taskid){
+                Log.d("lol_statustask_main",String.valueOf(fragments.get(i).getTask().getStatus())  + String.valueOf(fragments.get(i).getTask().getId()));
+                Log.d("lol_statustask_main_i",String.valueOf(i));
+                fragments.get(i).getTask().setStatus(status);
+                fragments.get(i).showingStatus();
+                break;
+            }
+            i++;
+        }
+    }
+
+    @Override
+    public void addListStaffs(List<Staff> staffs) {
+        MainActivity.staffs = staffs;
+    }
+
+    @Override
+    public void addNewIssue(Issue issue) {
+
+        int i=0;
+        while(true){
+            if(i >= fragments.size()) break;
+            if(fragments.get(i).getTask().getId() == issue.getTask_id()){
+                fragments.get(i).getTask().getIssues().add(issue);
+                fragments.get(i).showingStatus();
+                break;
+            }
+            i++;
+        }
+    }
+
 
 }

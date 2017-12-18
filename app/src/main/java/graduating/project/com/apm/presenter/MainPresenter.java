@@ -2,13 +2,15 @@ package graduating.project.com.apm.presenter;
 
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import graduating.project.com.apm.callback.MainResult;
+import graduating.project.com.apm.callback.OnJsonToStaffsCompleted;
 import graduating.project.com.apm.callback.OnJsonToTaskCompleted;
 import graduating.project.com.apm.callback.OnJsonToTasksCompleted;
 import graduating.project.com.apm.model.MainHelper;
+import graduating.project.com.apm.object.Issue;
+import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.view.MainView;
 
@@ -16,7 +18,7 @@ import graduating.project.com.apm.view.MainView;
  * Created by Tuan on 19/11/2017.
  */
 
-public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonToTaskCompleted {
+public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonToTaskCompleted, OnJsonToStaffsCompleted {
     private MainView view;
     private MainHelper model;
 
@@ -26,23 +28,42 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
         this.model.setOnMainResult(this);
     }
 
+
     public void getListTaskFromServer() {
-        List<Task> tasks = new ArrayList<>();
-//        tasks.add(new Task(1,"time",1,"temp1","temp1",23,"temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1",null,null));
+//        List<Task> tasks = new ArrayList<>();
+//        tasks.add(new Task(-1,"time",1,"temp1","temp1",23,"temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1",null,null));
 //        tasks.add(new Task(2,"time",2,"temp1","temp1",23,"temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1","temp1",null, null));
-        view.fillTasksIntoViewPager(tasks);
-        view.updateIndicatorTv();
+//        view.fillTasksIntoViewPager(tasks);
+//        view.updateIndicatorTv();
     }
 
-    public void convertJsonToTasks(Object... objects){
+
+    public void convertJsonToListTasks(Object... objects){
         Log.d("json_async_aaa","presenter1");
-        model.convertJsonToTasks(this,objects);
+        model.convertJsonToListTasks(this,objects);
         Log.d("json_async_aaa","presenter2");
+    }
+
+    public void convertJsonToListStaffs(Object... objects){
+        model.convertJsonToListStaffs(this,objects);
     }
 
     public void newAddedTask(Object... objects){
         model.convertJsonToTask(this,objects);
     }
+
+    public void updateStatusTask(int taskid, int status){
+        view.updateStatusTask(taskid,status);
+    }
+
+    public void updateAssignTask(int taskid, int staffid) {
+        view.updateAssignTask(taskid, staffid);
+    }
+
+    public void newAddedIssue(Issue issue){
+        view.addNewIssue(issue);
+    }
+
     @Override
     public void onGetTaskSucess(List<Task> tasks) {
         view.fillTasksIntoViewPager(tasks);
@@ -56,14 +77,13 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
 
     @Override
     public void onJsonToTasksCompleted(List<Task> tasks) {
-//        view.fillTasksIntoViewPager(tasks);
-//        view.updateIndicatorTv();
-        Log.d("json_async_aaa","completed");
+        view.fillTasksIntoViewPager(tasks);
+        view.updateIndicatorTv();
     }
 
     @Override
     public void onJsonToTasksFailed(String error) {
-        Log.d("json_async_aaa","failed");
+        Log.d("json_async_aaa",error);
     }
 
     @Override
@@ -75,5 +95,15 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
     @Override
     public void onJsonToTaskFailed(String error) {
         Log.d("json_async_aaatask","failed");
+    }
+
+    @Override
+    public void onJsonToStaffsCompleted(List<Staff> staffs) {
+        view.addListStaffs(staffs);
+    }
+
+    @Override
+    public void onJsonToStaffsFailed(String error) {
+        Log.d("json_async_aaaliststaff","failed");
     }
 }
