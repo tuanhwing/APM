@@ -280,9 +280,6 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     @Override
     public void fillTasksIntoViewPager(ArrayList<CommonFragment> fragments) {
         this.fragments = fragments;
-//        for(Task temp : tasks){
-//            fragments.add(new CommonFragment(temp));
-//        }
 
         // 1. Animation parallax for ViewPager with setPageTransformer
         viewPager.setPageTransformer(false, new CustPagerTransformer(this));
@@ -314,6 +311,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void setAdapterForViewPager(ArrayList<CommonFragment> fragments) {
+        this.fragments = fragments;
         mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(), fragments, mainPresenter);
         viewPager.setAdapter(mainPagerAdapter);
         this.updateIndicatorTv();
@@ -333,12 +331,12 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void addNewTaskIntoAdapter(Task task) {
+        tasks.add(task);
         if(fragments.size() == 0){
             ArrayList<CommonFragment> temp = new ArrayList<>();
             temp.add(new CommonFragment(task));
             this.fillTasksIntoViewPager(temp);
         }else {
-            tasks.add(task);
             fragments.add(new CommonFragment(task));
             mainPagerAdapter.notifyDataSetChanged();
         }
@@ -347,28 +345,48 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void updateStatusTask(int taskid, int status) {
-        int i=0;
+        int j=0;
         while(true){
-            if(fragments.get(i).getTask().getId() == taskid){
-                fragments.get(i).getTask().setStatus(status);
-                fragments.get(i).showingStatus();
+            if(tasks.get(j).getId() == taskid){
+                if(j >= tasks.size()) break;
+                tasks.get(j).setStatus(status);
+                int i=0;
+                while(true){
+                    if(fragments.get(i).getTask().getId() == taskid){
+                        if(i >= fragments.size()) break;
+                        fragments.get(i).getTask().setStatus(status);
+                        fragments.get(i).showingStatus();
+                        break;
+                    }
+                    i++;
+                }
                 break;
             }
-            i++;
+            j++;
         }
     }
 
     @Override
     public void updateAssignTask(Assign assign) {
-        int i=0;
+        int j=0;
         while(true){
-            if(i >= fragments.size()) break;
-            if(fragments.get(i).getTask().getId() == assign.getTask_id()){
-                fragments.get(i).getTask().getAssign().add(assign);
-                fragments.get(i).showingNewAssign(assign.getStaff().getName());
+            if(j >= tasks.size()) break;
+            if(tasks.get(j).getId() == assign.getTask_id()){
+                tasks.get(j).getAssign().add(assign);
+                int i=0;
+                while(true){
+                    if(i >= fragments.size()) break;
+                    if(fragments.get(i).getTask().getId() == assign.getTask_id()){
+                        fragments.get(i).getTask().getAssign().add(assign);
+                        Log.d("lol_assign_aaaaa","1");
+                        fragments.get(i).showingNewAssign(assign.getStaff().getName());
+                        break;
+                    }
+                    i++;
+                }
                 break;
             }
-            i++;
+            j++;
         }
     }
 
@@ -380,15 +398,23 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     @Override
     public void addNewIssue(Issue issue) {
 
-        int i=0;
+        int j=0;
         while(true){
-            if(i >= fragments.size()) break;
-            if(fragments.get(i).getTask().getId() == issue.getTask_id()){
-                fragments.get(i).getTask().getIssues().add(issue);
-                fragments.get(i).showingStatus();
+            if(j >= tasks.size()) break;
+            if(tasks.get(j).getId() == issue.getTask_id()){
+                tasks.get(j).getIssues().add(issue);
+                int i=0;
+                while(true){
+                    if(i >= fragments.size()) break;
+                    if(fragments.get(i).getTask().getId() == issue.getTask_id()){
+                        fragments.get(i).getTask().getIssues().add(issue);
+                        break;
+                    }
+                    i++;
+                }
                 break;
             }
-            i++;
+            j++;
         }
     }
 
@@ -400,24 +426,14 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 fragments.remove(0);
                 tasks.remove(0);
                 mainPagerAdapter.notifyDataSetChanged();
-//                ArrayList<CommonFragment> tempTasks = new ArrayList<>();
-//                tempTasks.add(new CommonFragment(new Task(1,"time",1,"timecreate","name",123,"temp1","temp2","temp3","temp4","temp5","temp6",new ArrayList<Issue>(),new ArrayList<Assign>())));
-//                tempTasks.add(new CommonFragment(new Task(2,"time",2,"timecreate","name",123,"temp1","temp2","temp3","temp4","temp5","temp6",new ArrayList<Issue>(),new ArrayList<Assign>())));
-//                mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),tempTasks);
-//                viewPager.setAdapter(mainPagerAdapter);
-//                mainPagerAdapter.notifyDataSetChanged();
                 break;
             }
 
             case R.id.img_btn1:{
-//                mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),new ArrayList<CommonFragment>());
-//                viewPager.setAdapter(mainPagerAdapter);
                 break;
             }
 
             case R.id.img_btn2:{
-//                mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),fragments);
-//                viewPager.setAdapter(mainPagerAdapter);
                 break;
             }
 

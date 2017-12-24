@@ -89,7 +89,7 @@ public class SocketEvent {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d("assign_task",String.valueOf(args[0]));
+                    Log.d("lol_assign_aaaaa",String.valueOf(args[0]));
                     Gson gson = new Gson();
                     JSONObject data = (JSONObject) args[0];
                     try {

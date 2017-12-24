@@ -100,18 +100,6 @@ public class TaskFilter extends Filter {
 //        mainPagerAdapter.notifyDataSetChanged();
         mainPresenter.setAdapterForViewpager((ArrayList<CommonFragment>) results.values);
 
-//        ArrayList<Task> taskArrayList = (ArrayList<Task>) results.values;
-//        ArrayList<CommonFragment> commonFragments = new ArrayList<>();
-//        Log.d("search_filter","9size: " + taskArrayList.size());
-//
-//        for (int i =0; i < taskArrayList.size(); i++){
-//            commonFragments.add(new CommonFragment(taskArrayList.get(i)));
-////            commonFragments.add(new CommonFragment(new Task(1,"time",1,"timecreate","name",123,"temp1","temp2","temp3","temp4","temp5","temp6",new ArrayList<Issue>(),new ArrayList<Assign>())));
-//        }
-//        mainPresenter.setAdapterForViewpager(commonFragments);
-//        ArrayList<CommonFragment> result = (ArrayList<CommonFragment>) results.values;
-//        for(CommonFragment common : result){
-//            Log.d("search_filter"," value  " + common.getTask().getId());
 //        }
         Log.d("search_filter","10");
     }

@@ -73,6 +73,7 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
 //        //temp
 //        TimerAsync timerAsync = new TimerAsync(tvTimeRequire);
 //        timerAsync.execute(100);
+//        new TimerAsync(this).execute(100);
 //        //temp
         dragLayout.setGotoDetailListener(this);
         return rootView;
@@ -107,13 +108,22 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
 
     @Override
     public void showingNewAssign(String name){
-        tvAssign.append(" | " + name);
+        try{
+            tvAssign.append(" | " + name);
+        } catch (Exception e){
+            Log.e("error_common_fg",String.valueOf(e.getMessage()));
+        }
     }
 
     @Override
     public void updateTimerequire(String timeRequire) {
-        this.task.setTime_require(timeRequire);
-        tvTimeRequire.setText(timeRequire);
+//        this.task.setTime_require(timeRequire);
+        try {
+            tvTimeRequire.setText(timeRequire);
+        }  catch (Exception e){
+            Log.e("error_common_fg",String.valueOf(e.getMessage()));
+        }
+
     }
 
     @Override
@@ -131,27 +141,35 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
 
     @Override
     public void showingStatus() {
-        switch (task.getStatus()){
-            case 0: {
-                imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_new));
-                break;
+        try {
+            switch (task.getStatus()){
+                case 0: {
+                    imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_new));
+                    break;
+                }
+                case 1: {
+                    imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_problem));
+                    break;
+                }
+                case 2: {
+                    imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_completed));
+                    break;
+                }
             }
-            case 1: {
-                imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_problem));
-                break;
-            }
-            case 2: {
-                imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_completed));
-                break;
-            }
+        } catch (Exception e){
+            Log.e("error_common_fg",String.valueOf(e.getMessage()));
         }
+
     }
 
     @Override
     public void updateStatusTask(int status) {
-        this.task.setStatus(status);
-        this.showingStatus();
-        Log.d("lol_statustask","fragment");
+        try {
+            this.task.setStatus(status);
+            this.showingStatus();
+        } catch (Exception e){
+            Log.e("error_common_fg",String.valueOf(e.getMessage()));
+        }
     }
 
 }

@@ -2,21 +2,22 @@ package graduating.project.com.apm.exclass;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
+
+import graduating.project.com.apm.CommonFragment;
 
 /**
  * Created by Tuan on 23/12/2017.
  */
 
 public class TimerAsync extends AsyncTask<Integer, Integer, Void> {
-    TextView tvTimer;
+    CommonFragment commonFragment;
     public TimerAsync (){
 
     }
 
 
-    public TimerAsync(TextView textView){
-        this.tvTimer = textView;
+    public TimerAsync(CommonFragment commonFragment){
+        this.commonFragment = commonFragment;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class TimerAsync extends AsyncTask<Integer, Integer, Void> {
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
-        tvTimer.setText(String.valueOf(values[0]));
+        commonFragment.updateTimerequire(String.valueOf(values[0]));
     }
 
     @Override
