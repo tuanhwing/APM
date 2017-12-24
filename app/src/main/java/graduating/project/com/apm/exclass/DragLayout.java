@@ -15,14 +15,14 @@ import android.widget.FrameLayout;
 import graduating.project.com.apm.R;
 
 /**
- * 尽量考虑了所有操作系统版本的分辨率适配
+ * Try to consider the resolution adaptation of all operating system versions
  * Created by xmuSistone on 2016/9/18.
  */
 public class DragLayout extends FrameLayout {
 
-    private int bottomDragVisibleHeight; // 滑动可见的高度
-    private int bototmExtraIndicatorHeight; // 底部指示器的高度
-    private int dragTopDest = 0; // 顶部View滑动的目标位置
+    private int bottomDragVisibleHeight; //Slide the visible height
+    private int bototmExtraIndicatorHeight; // Bottom indicator height
+    private int dragTopDest = 0; // Top View Sliding target position
     private static final int DECELERATE_THRESHOLD = 120;
     private static final int DRAG_SWITCH_DISTANCE_THRESHOLD = 100;
     private static final int DRAG_SWITCH_VEL_THRESHOLD = 800;
@@ -32,13 +32,13 @@ public class DragLayout extends FrameLayout {
 
     private static final int STATE_CLOSE = 1;
     private static final int STATE_EXPANDED = 2;
-    private int downState; // 按下时的状态
+    private int downState; // When pressed
 
     private final ViewDragHelper mDragHelper;
     private final GestureDetectorCompat moveDetector;
-    private int mTouchSlop = 5; // 判定为滑动的阈值，单位是像素
-    private int originX, originY; // 初始状态下，topView的坐标
-    private View bottomView, topView; // FrameLayout的两个子View
+    private int mTouchSlop = 5; //The threshold value is determined to be a slide, and the unit is a pixel
+    private int originX, originY; //The coordinates of the topView in the initial state
+    private View bottomView, topView; // Two subviews of FrameLayout
 
     private GotoDetailListener gotoDetailListener;
 
@@ -62,9 +62,9 @@ public class DragLayout extends FrameLayout {
                 .create(this, 10f, new DragHelperCallback());
         mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_TOP);
         moveDetector = new GestureDetectorCompat(context, new MoveDetector());
-        moveDetector.setIsLongpressEnabled(false); // 不处理长按事件
+        moveDetector.setIsLongpressEnabled(false); // Do not deal with long press events
 
-        // 滑动的距离阈值由系统提供
+        //The sliding distance threshold is provided by the system
         ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
     }
@@ -78,22 +78,24 @@ public class DragLayout extends FrameLayout {
         topView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 点击回调
+                //click callback
                 int state = getCurrentState();
                 if (state == STATE_CLOSE) {
-                    // 点击时为初始状态，需要展开
+                    //When clicked is initial state and needs to be expanded
                     if (mDragHelper.smoothSlideViewTo(topView, originX, dragTopDest)) {
                         ViewCompat.postInvalidateOnAnimation(DragLayout.this);
                     }
                 } else {
-                    // 点击时为展开状态，直接进入详情页
+                    //Click to expand status, go directly to the details page
                     gotoDetailActivity();
                 }
             }
         });
     }
 
-    // 跳转到下一页
+    /**
+     * Jump to the next page
+     */
     private void gotoDetailActivity() {
         if (null != gotoDetailListener) {
             gotoDetailListener.gotoDetail();
@@ -121,7 +123,7 @@ public class DragLayout extends FrameLayout {
         public int clampViewPositionVertical(View child, int top, int dy) {
             int currentTop = child.getTop();
             if (top > child.getTop()) {
-                // 往下拉的时候，阻力最小
+                //When pulled down, the resistance is minimal
                 return currentTop + (top - currentTop) / 2;
             }
 
@@ -163,17 +165,17 @@ public class DragLayout extends FrameLayout {
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             int finalY = originY;
             if (downState == STATE_CLOSE) {
-                // 按下的时候，状态为：初始状态
+                // When pressed, the status is: Initial status
                 if (originY - releasedChild.getTop() > DRAG_SWITCH_DISTANCE_THRESHOLD || yvel < -DRAG_SWITCH_VEL_THRESHOLD) {
                     finalY = dragTopDest;
                 }
             } else {
-                // 按下的时候，状态为：展开状态
+                // When pressed, the status is: expanded state
                 boolean gotoBottom = releasedChild.getTop() - dragTopDest > DRAG_SWITCH_DISTANCE_THRESHOLD || yvel > DRAG_SWITCH_VEL_THRESHOLD;
                 if (!gotoBottom) {
                     finalY = dragTopDest;
 
-                    // 如果按下时已经展开，又向上拖动了，就进入详情页
+                    // If you press the already expanded, drag up again to enter the details page
                     if (dragTopDest - releasedChild.getTop() > mTouchSlop) {
                         gotoDetailActivity();
                         postResetPosition();
@@ -199,7 +201,7 @@ public class DragLayout extends FrameLayout {
     }
 
     /**
-     * 顶层ImageView位置变动，需要对底层的view进行缩放显示
+     * The top of the ImageView position changes, you need to scale the underlying view display
      */
     private void processLinkageView() {
         if (topView.getTop() > originY) {
@@ -226,7 +228,7 @@ public class DragLayout extends FrameLayout {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float dx,
                                 float dy) {
-            // 拖动了，touch不往下传递
+            // Drag, touch do not pass down
             return Math.abs(dy) + Math.abs(dx) > mTouchSlop;
         }
     }
@@ -239,7 +241,7 @@ public class DragLayout extends FrameLayout {
     }
 
     /**
-     * 获取当前状态
+     * Get the current status
      */
     private int getCurrentState() {
         int state;
@@ -265,10 +267,10 @@ public class DragLayout extends FrameLayout {
         dragTopDest = bottomView.getBottom() - bottomDragVisibleHeight - topView.getMeasuredHeight();
     }
 
-    /* touch事件的拦截与处理都交给mDraghelper来处理 */
+    /* The touch event is intercepted and processed by mDraghelper */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // 1. detector和mDragHelper判断是否需要拦截
+        // 1. Detector and mDragHelper determine whether you need to intercept
         boolean yScroll = moveDetector.onTouchEvent(ev);
         boolean shouldIntercept = false;
         try {
@@ -276,7 +278,7 @@ public class DragLayout extends FrameLayout {
         } catch (Exception e) {
         }
 
-        // 2. 触点按下的时候直接交给mDragHelper
+        // 2. When the contact is pressed directly to the mDragHelper
         int action = ev.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             downState = getCurrentState();
@@ -290,8 +292,8 @@ public class DragLayout extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        // bottomMarginTop高度的计算，还是需要有一个清晰的数学模型才可以。
-        // 实现的效果，是topView.top和bottomView.bottom展开前、与展开后都整体居中
+        // BottomMarginTop height calculation, or need to have a clear mathematical model can.
+        // Achieve the effect of topView.top and bottomView.bottom before expansion, and after the expansion of the overall center
         int bottomMarginTop = (bottomDragVisibleHeight + topView.getMeasuredHeight() / 2 - bottomView.getMeasuredHeight() / 2) / 2 - bototmExtraIndicatorHeight;
         FrameLayout.LayoutParams lp1 = (LayoutParams) bottomView.getLayoutParams();
         lp1.setMargins(0, bottomMarginTop, 0, 0);
@@ -300,7 +302,7 @@ public class DragLayout extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        // 统一交给mDragHelper处理，由DragHelperCallback实现拖动效果
+        // Unified to the mDragHelper processing drag drag effect achieved by the DragHelperCallback
         try {
             mDragHelper.processTouchEvent(e);
         } catch (Exception ex) {

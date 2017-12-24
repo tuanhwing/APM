@@ -2,13 +2,16 @@ package graduating.project.com.apm.presenter;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import graduating.project.com.apm.CommonFragment;
 import graduating.project.com.apm.callback.MainResult;
 import graduating.project.com.apm.callback.OnJsonToStaffsCompleted;
 import graduating.project.com.apm.callback.OnJsonToTaskCompleted;
 import graduating.project.com.apm.callback.OnJsonToTasksCompleted;
 import graduating.project.com.apm.model.MainHelper;
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
 import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.object.Task;
@@ -56,17 +59,22 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
         view.updateStatusTask(taskid,status);
     }
 
-    public void updateAssignTask(int taskid, int staffid) {
-        view.updateAssignTask(taskid, staffid);
+    public void updateAssignTask(Assign assign) {
+        view.updateAssignTask(assign);
     }
 
     public void newAddedIssue(Issue issue){
         view.addNewIssue(issue);
     }
 
+    public void setAdapterForViewpager(ArrayList<CommonFragment> fragments) {
+        view.setAdapterForViewPager(fragments);
+    }
+
     @Override
-    public void onGetTaskSucess(List<Task> tasks) {
-        view.fillTasksIntoViewPager(tasks);
+    public void onGetTaskSucess(ArrayList<Task> tasks) {
+        view.saveListTasks(tasks);
+        view.fillTasksIntoViewPager(model.convertTasksToCommonFragment(tasks));
         view.updateIndicatorTv();
     }
 
@@ -76,8 +84,9 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
     }
 
     @Override
-    public void onJsonToTasksCompleted(List<Task> tasks) {
-        view.fillTasksIntoViewPager(tasks);
+    public void onJsonToTasksCompleted(ArrayList<Task> tasks) {
+        view.saveListTasks(tasks);
+        view.fillTasksIntoViewPager(model.convertTasksToCommonFragment(tasks));
         view.updateIndicatorTv();
     }
 

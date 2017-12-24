@@ -30,16 +30,14 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_status"
+                    android:id="@+id/tv_assign"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:drawableLeft="@drawable/ic_battery_status"
+                    android:drawableLeft="@drawable/ic_crowd_of_users"
                     android:layout_marginLeft="10dp"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingRight="10dp"
-                    android:text="La Crescenta-Montrose, CA91020 Glende And Way"
                     android:textColor="#333"
                     android:textSize="15sp" />
 
@@ -52,24 +50,24 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <com.rey.material.widget.Slider
-                        android:id="@+id/address5"
-                        app:sl_minValue="0"
-                        app:sl_maxValue="100"
-                        app:sl_value="50"
-                        style="@style/Material.Widget.Slider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center" />
-
-                    <!--<TextView-->
+                    <!--<com.rey.material.widget.Slider-->
                         <!--android:id="@+id/address5"-->
-                        <!--android:layout_width="0dp"-->
+                        <!--app:sl_minValue="0"-->
+                        <!--app:sl_maxValue="100"-->
+                        <!--app:sl_value="50"-->
+                        <!--style="@style/Material.Widget.Slider"-->
+                        <!--android:layout_width="match_parent"-->
                         <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:text="NO. 7911847"-->
-                        <!--android:textColor="#333"-->
-                        <!--android:textSize="15sp" />-->
+                        <!--android:gravity="center" />-->
+
+                    <TextView
+                        android:id="@+id/address5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="NO. 7911847"
+                        android:textColor="#333"
+                        android:textSize="15sp" />
 
                     <RatingBar
                         android:id="@+id/rating"
@@ -107,21 +105,21 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="-10dp"
-                        android:src="@drawable/head2" />
+                        android:src="@drawable/head1" />
 
                     <ImageView
                         android:id="@+id/head3"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="-10dp"
-                        android:src="@drawable/head3" />
+                        android:src="@drawable/head1" />
 
                     <ImageView
                         android:id="@+id/head4"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="-10dp"
-                        android:src="@drawable/head4" />
+                        android:src="@drawable/head1" />
 
                     <View
                         android:layout_width="0dp"

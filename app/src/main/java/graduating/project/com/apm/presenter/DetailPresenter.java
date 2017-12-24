@@ -1,7 +1,10 @@
 package graduating.project.com.apm.presenter;
 
+import org.json.JSONException;
+
 import graduating.project.com.apm.callback.DetailResult;
 import graduating.project.com.apm.model.DetailHelper;
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
 import graduating.project.com.apm.view.DetailView;
 
@@ -25,5 +28,13 @@ public class DetailPresenter implements DetailResult {
 
     public void updateStatusTask(int taskid, int status){
         view.updateStatus(taskid, status);
+    }
+
+    public void sendNewIssueToServer(String content, int id) throws JSONException {
+        model.sendNewIssueToServer(content, id);
+    }
+
+    public void updateNewAssign(Assign assign) {
+        view.updateAssignTask(assign);
     }
 }

@@ -12,6 +12,8 @@ public interface CommonView {
 
     void showingStatus();
 
+    void showingNewAssign(String name);
+
     void updateStatusTask(int status);
 
 }

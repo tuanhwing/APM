@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 /**
- * 锁定宽高比的CardView
+ * Lock aspect ratio CardView
  * Created by xmuSistone on 2016/9/21.
  */
 public class AspectRatioCardView extends CardView {

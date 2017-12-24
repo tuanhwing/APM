@@ -1,6 +1,6 @@
 package graduating.project.com.apm.callback;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import graduating.project.com.apm.object.Task;
 
@@ -10,7 +10,7 @@ import graduating.project.com.apm.object.Task;
 
 public interface MainResult {
 
-    void onGetTaskSucess(List<Task> tasks);
+    void onGetTaskSucess(ArrayList<Task> tasks);
 
      void onGetTaskError(String error);
 }

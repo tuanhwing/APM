@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import graduating.project.com.apm.exclass.CustPagerTransformer;
 import graduating.project.com.apm.model.MainHelper;
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
 import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.object.Task;
@@ -46,7 +47,7 @@ import graduating.project.com.apm.view.MainView;
 /**
  * Created by xmuSistone on 2016/9/18.
  */
-public class MainActivity extends FragmentActivity implements MainView{
+public class MainActivity extends FragmentActivity implements MainView, View.OnClickListener{
 
     //MVP
     private MainPresenter mainPresenter;
@@ -65,6 +66,10 @@ public class MainActivity extends FragmentActivity implements MainView{
     ImageView temp;
     @BindView(R.id.img_btn1)
     ImageView temp1;
+    @BindView(R.id.img_btn2)
+    ImageView temp2;
+    @BindView(R.id.v_close)
+    View vClose;
     @BindView(R.id.search_view)
     SearchView searchView;
 
@@ -72,7 +77,8 @@ public class MainActivity extends FragmentActivity implements MainView{
     private MainPagerAdapter mainPagerAdapter;
 
     //Content Viewpager
-    private List<CommonFragment> fragments = new ArrayList<>(); // 供ViewPager使用
+    private ArrayList<CommonFragment> fragments = new ArrayList<>(); // 供ViewPager使用
+    public static ArrayList<Task> tasks = new ArrayList<>();
 //    private final String[] imageArray = {"assets://image1.jpg", "assets://image2.jpg", "assets://image3.jpg", "assets://image4.jpg", "assets://image5.jpg"};
 
     //Temp
@@ -119,6 +125,8 @@ public class MainActivity extends FragmentActivity implements MainView{
         }
         //[END] Init MVP
 
+        addEvents();
+
 //        dealStatusBar(); // Fix height of statusbar
         this.dealStatusBar();// Fix height of statusbar
 
@@ -150,9 +158,24 @@ public class MainActivity extends FragmentActivity implements MainView{
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {// API >= 14
                     TransitionManager.beginDelayedTransition(searchContainer);
                 }
+
                 rlSearch.setVisibility(View.VISIBLE);
                 rlToolbar.setVisibility(View.GONE);
                 searchView.setIconified(false);
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("search_activity",newText);
+                mainPagerAdapter.getFilter().filter(newText);
+                return false;
             }
         });
 
@@ -163,11 +186,17 @@ public class MainActivity extends FragmentActivity implements MainView{
         SocketSingleton.getInstance().getSocket().on("server-send-list-staff", socketEvent.getOnListStaffs());
         SocketSingleton.getInstance().getSocket().on("server-send-new-task-to-all",socketEvent.getOnNewTask());
         SocketSingleton.getInstance().getSocket().on("connect-ok", socketEvent.getOnConnected());
-        SocketSingleton.getInstance().getSocket().on("error-update-status-task", socketEvent.getOnErrorUpdateStatus());
         SocketSingleton.getInstance().getSocket().on("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
         SocketSingleton.getInstance().getSocket().on("server-send-assign-to-all", socketEvent.getOnAssignTask());
         SocketSingleton.getInstance().getSocket().on("server-send-issue-to-all", socketEvent.getOnNewIssue());
         SocketSingleton.getInstance().getSocket().connect();
+    }
+
+    private void addEvents() {
+        temp.setOnClickListener(this);
+        temp1.setOnClickListener(this);
+        temp2.setOnClickListener(this);
+        vClose.setOnClickListener(this);
     }
 
     private int getStatusBarHeight() {
@@ -227,7 +256,6 @@ public class MainActivity extends FragmentActivity implements MainView{
         SocketSingleton.getInstance().getSocket().off("send-list-tasks-to-client", socketEvent.getOnListTask());
         SocketSingleton.getInstance().getSocket().off("server-send-new-task-to-all",socketEvent.getOnNewTask());
         SocketSingleton.getInstance().getSocket().off("connect-ok", socketEvent.getOnConnected());
-        SocketSingleton.getInstance().getSocket().off("error-update-status-task", socketEvent.getOnErrorUpdateStatus());
         SocketSingleton.getInstance().getSocket().off("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all", socketEvent.getOnAssignTask());
         SocketSingleton.getInstance().getSocket().off("server-send-issue-to-all", socketEvent.getOnNewIssue());
@@ -245,20 +273,26 @@ public class MainActivity extends FragmentActivity implements MainView{
     }
 
     @Override
-    public void fillTasksIntoViewPager(List<Task> tasks) {
-        fragments = new ArrayList<>();
-        for(Task temp : tasks){
-            fragments.add(new CommonFragment(temp));
-        }
+    public void saveListTasks(ArrayList<Task> tasks) {
+        this.tasks = tasks;
+    }
 
-        // 1. viewPager添加parallax效果，使用PageTransformer就足够了
+    @Override
+    public void fillTasksIntoViewPager(ArrayList<CommonFragment> fragments) {
+        this.fragments = fragments;
+//        for(Task temp : tasks){
+//            fragments.add(new CommonFragment(temp));
+//        }
+
+        // 1. Animation parallax for ViewPager with setPageTransformer
         viewPager.setPageTransformer(false, new CustPagerTransformer(this));
 
-        mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),fragments);
-        viewPager.setAdapter(mainPagerAdapter);
+//        mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),fragments);
+//        viewPager.setAdapter(mainPagerAdapter);
+        this.setAdapterForViewPager(fragments);
 
 
-        // 3. viewPager滑动时，调整指示器
+        // 3. Adjust the indicator when viewPager slides
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -279,6 +313,13 @@ public class MainActivity extends FragmentActivity implements MainView{
     }
 
     @Override
+    public void setAdapterForViewPager(ArrayList<CommonFragment> fragments) {
+        mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(), fragments, mainPresenter);
+        viewPager.setAdapter(mainPagerAdapter);
+        this.updateIndicatorTv();
+    }
+
+    @Override
     public void updateIndicatorTv() {
         int totalNum = viewPager.getAdapter().getCount();
         int currentItem = viewPager.getCurrentItem() + 1;
@@ -293,10 +334,11 @@ public class MainActivity extends FragmentActivity implements MainView{
     @Override
     public void addNewTaskIntoAdapter(Task task) {
         if(fragments.size() == 0){
-            List<Task> temp = new ArrayList<>();
-            temp.add(task);
+            ArrayList<CommonFragment> temp = new ArrayList<>();
+            temp.add(new CommonFragment(task));
             this.fillTasksIntoViewPager(temp);
         }else {
+            tasks.add(task);
             fragments.add(new CommonFragment(task));
             mainPagerAdapter.notifyDataSetChanged();
         }
@@ -317,15 +359,13 @@ public class MainActivity extends FragmentActivity implements MainView{
     }
 
     @Override
-    public void updateAssignTask(int taskid, int status) {
+    public void updateAssignTask(Assign assign) {
         int i=0;
         while(true){
             if(i >= fragments.size()) break;
-            if(fragments.get(i).getTask().getId() == taskid){
-                Log.d("lol_statustask_main",String.valueOf(fragments.get(i).getTask().getStatus())  + String.valueOf(fragments.get(i).getTask().getId()));
-                Log.d("lol_statustask_main_i",String.valueOf(i));
-                fragments.get(i).getTask().setStatus(status);
-                fragments.get(i).showingStatus();
+            if(fragments.get(i).getTask().getId() == assign.getTask_id()){
+                fragments.get(i).getTask().getAssign().add(assign);
+                fragments.get(i).showingNewAssign(assign.getStaff().getName());
                 break;
             }
             i++;
@@ -353,4 +393,38 @@ public class MainActivity extends FragmentActivity implements MainView{
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.img_btn: {
+                fragments.remove(0);
+                tasks.remove(0);
+                mainPagerAdapter.notifyDataSetChanged();
+//                ArrayList<CommonFragment> tempTasks = new ArrayList<>();
+//                tempTasks.add(new CommonFragment(new Task(1,"time",1,"timecreate","name",123,"temp1","temp2","temp3","temp4","temp5","temp6",new ArrayList<Issue>(),new ArrayList<Assign>())));
+//                tempTasks.add(new CommonFragment(new Task(2,"time",2,"timecreate","name",123,"temp1","temp2","temp3","temp4","temp5","temp6",new ArrayList<Issue>(),new ArrayList<Assign>())));
+//                mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),tempTasks);
+//                viewPager.setAdapter(mainPagerAdapter);
+//                mainPagerAdapter.notifyDataSetChanged();
+                break;
+            }
+
+            case R.id.img_btn1:{
+//                mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),new ArrayList<CommonFragment>());
+//                viewPager.setAdapter(mainPagerAdapter);
+                break;
+            }
+
+            case R.id.img_btn2:{
+//                mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),fragments);
+//                viewPager.setAdapter(mainPagerAdapter);
+                break;
+            }
+
+            case R.id.v_close: {
+                finish();
+                break;
+            }
+        }
+    }
 }

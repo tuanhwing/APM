@@ -1,6 +1,6 @@
 package graduating.project.com.apm.callback;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import graduating.project.com.apm.object.Task;
 
@@ -9,6 +9,6 @@ import graduating.project.com.apm.object.Task;
  */
 
 public interface OnJsonToTasksCompleted {
-    void onJsonToTasksCompleted(List<Task> tasks);
+    void onJsonToTasksCompleted(ArrayList<Task> tasks);
     void onJsonToTasksFailed(String error);
 }

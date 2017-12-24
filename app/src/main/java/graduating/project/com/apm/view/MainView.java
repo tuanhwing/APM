@@ -1,7 +1,10 @@
 package graduating.project.com.apm.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import graduating.project.com.apm.CommonFragment;
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
 import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.object.Task;
@@ -13,7 +16,11 @@ import graduating.project.com.apm.object.Task;
 public interface MainView {
     void dealStatusBar(); //Fix height of statusbar
 
-    void fillTasksIntoViewPager(List<Task> tasks);//fillViewPager
+    void saveListTasks(ArrayList<Task> tasks);
+
+    void fillTasksIntoViewPager(ArrayList<CommonFragment> fragments);//fillViewPager
+
+    void setAdapterForViewPager(ArrayList<CommonFragment> fragments);
 
     void updateIndicatorTv();
 
@@ -23,10 +30,11 @@ public interface MainView {
 
     void updateStatusTask(int taskid, int status);
 
-    void updateAssignTask(int taskid, int status);
+    void updateAssignTask(Assign assign);
 
     void addListStaffs(List<Staff> staffs);
 
     void addNewIssue(Issue issue);
+
 
 }

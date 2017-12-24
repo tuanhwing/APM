@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
 import graduating.project.com.apm.presenter.DetailPresenter;
 
@@ -73,7 +74,55 @@ public class SocketEventDetail {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(activity,"DETAIL " + String.valueOf(args[0]),Toast.LENGTH_SHORT).show();
+                    Gson gson = new Gson();
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Boolean err = data.getBoolean("error");
+                        if(!err){
+                            presenter.updateNewAssign(gson.fromJson(data.getString("content"),Assign.class));
+                        }
+
+                        Toast.makeText(activity,"DETAIL " + String.valueOf(args[0]),Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onResultAssign = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Gson gson = new Gson();
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Boolean err = data.getBoolean("error");
+                        if(err){
+                            Toast.makeText(activity,String.valueOf(data.getString("message")),Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onErrorUpdateStatusTask = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(activity,"error update status!", Toast.LENGTH_LONG).show();
+
                 }
             });
         }
@@ -98,4 +147,8 @@ public class SocketEventDetail {
     public Emitter.Listener getOnAssignTask(){
         return onAssignTask;
     }
+
+    public Emitter.Listener getOnResultAssign() { return onResultAssign; }
+
+    public Emitter.Listener getOnErrorUpdateStatusTask() { return onErrorUpdateStatusTask; }
 }

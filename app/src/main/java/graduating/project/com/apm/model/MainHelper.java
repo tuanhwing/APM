@@ -1,5 +1,8 @@
 package graduating.project.com.apm.model;
 
+import java.util.ArrayList;
+
+import graduating.project.com.apm.CommonFragment;
 import graduating.project.com.apm.callback.MainResult;
 import graduating.project.com.apm.callback.OnJsonToStaffsCompleted;
 import graduating.project.com.apm.callback.OnJsonToTaskCompleted;
@@ -7,6 +10,7 @@ import graduating.project.com.apm.callback.OnJsonToTasksCompleted;
 import graduating.project.com.apm.exclass.AsyncJsonTask;
 import graduating.project.com.apm.exclass.JSONGetListStaffs;
 import graduating.project.com.apm.exclass.JSONGetListTasks;
+import graduating.project.com.apm.object.Task;
 
 /**
  * Created by Tuan on 19/11/2017.
@@ -67,5 +71,13 @@ public class MainHelper {
 
     public void convertJsonToTask(OnJsonToTaskCompleted listener, Object... objects){
         new AsyncJsonTask(listener).execute(objects);
+    }
+
+    public ArrayList<CommonFragment> convertTasksToCommonFragment(ArrayList<Task> tasks){
+        ArrayList<CommonFragment> fragments = new ArrayList<>();
+        for(Task temp : tasks){
+            fragments.add(new CommonFragment(temp));
+        }
+        return fragments;
     }
 }

@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import graduating.project.com.apm.callback.OnJsonToTasksCompleted;
 import graduating.project.com.apm.object.Task;
@@ -19,15 +18,15 @@ import graduating.project.com.apm.object.Task;
  * Created by Tuan on 30/11/2017.
  */
 
-public class JSONGetListTasks extends AsyncTask<Object, Void, List<Task>> {
+public class JSONGetListTasks extends AsyncTask<Object, Void, ArrayList<Task>> {
     private OnJsonToTasksCompleted listener;
 
     public JSONGetListTasks(OnJsonToTasksCompleted listener){
         this.listener = listener;
     }
     @Override
-    protected List<Task> doInBackground(Object... params) {
-        List<Task> tasks = new ArrayList<Task>();
+    protected ArrayList<Task> doInBackground(Object... params) {
+        ArrayList<Task> tasks = new ArrayList<Task>();
         Gson gson = new Gson();
         for (Object temp : params){
             JSONObject data = (JSONObject) temp;
@@ -52,7 +51,7 @@ public class JSONGetListTasks extends AsyncTask<Object, Void, List<Task>> {
     }
 
     @Override
-    protected void onPostExecute(List<Task> tasks) {
+    protected void onPostExecute(ArrayList<Task> tasks) {
         super.onPostExecute(tasks);
         listener.onJsonToTasksCompleted(tasks);
     }

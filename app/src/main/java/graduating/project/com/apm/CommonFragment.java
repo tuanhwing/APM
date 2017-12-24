@@ -17,19 +17,21 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.rey.material.widget.Slider;
 
 import graduating.project.com.apm.exclass.DragLayout;
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.view.CommonView;
+
+import static graduating.project.com.apm.R.id.tv_assign;
 
 /**
  * Created by xmuSistone on 2016/9/18.
  */
 public class CommonFragment extends Fragment implements DragLayout.GotoDetailListener, CommonView {
     private ImageView imageView;
-    private TextView tvTaskId, tvTimeRequire, tvTimeCreate, tvStatus;
-    private Slider address5;
+    private TextView tvTaskId, tvTimeRequire, tvTimeCreate, tvAssign;
+    private TextView address5;
     private View address2;
     private RatingBar ratingBar;
     private ImageView imgStatus;
@@ -57,8 +59,8 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         tvTimeRequire = (TextView) dragLayout.findViewById(R.id.tv_time_require);
         address2 = dragLayout.findViewById(R.id.address2);
         tvTimeCreate = (TextView) dragLayout.findViewById(R.id.tv_time_create);
-        tvStatus = (TextView) dragLayout.findViewById(R.id.tv_status);
-        address5 = (Slider) dragLayout.findViewById(R.id.address5);
+        tvAssign = (TextView) dragLayout.findViewById(tv_assign);
+        address5 = (TextView) dragLayout.findViewById(R.id.address5);
         imgStatus = (ImageView) dragLayout.findViewById(R.id.img_status);
         ratingBar = (RatingBar) dragLayout.findViewById(R.id.rating);
 
@@ -68,7 +70,10 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         head3 = dragLayout.findViewById(R.id.head3);
         head4 = dragLayout.findViewById(R.id.head4);
 
-
+//        //temp
+//        TimerAsync timerAsync = new TimerAsync(tvTimeRequire);
+//        timerAsync.execute(100);
+//        //temp
         dragLayout.setGotoDetailListener(this);
         return rootView;
     }
@@ -82,7 +87,7 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
                 new Pair(tvTimeRequire, DetailActivity.TIME_REQUIRE_TRANSITION_NAME),
                 new Pair(address2, DetailActivity.ADDRESS2_TRANSITION_NAME),
                 new Pair(tvTimeCreate, DetailActivity.TIME_CREATE_TRANSITION_NAME),
-//                new Pair(tvOtherRequire, DetailActivity.OTHER_REQUIRE_TRANSITION_NAME),
+                new Pair(tvAssign, DetailActivity.ASSIGN_TRANSITION_NAME),
                 new Pair(address5, DetailActivity.ADDRESS5_TRANSITION_NAME),
                 new Pair(ratingBar, DetailActivity.RATINGBAR_TRANSITION_NAME),
                 new Pair(head1, DetailActivity.HEAD1_TRANSITION_NAME),
@@ -101,6 +106,11 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
     }
 
     @Override
+    public void showingNewAssign(String name){
+        tvAssign.append(" | " + name);
+    }
+
+    @Override
     public void updateTimerequire(String timeRequire) {
         this.task.setTime_require(timeRequire);
         tvTimeRequire.setText(timeRequire);
@@ -111,6 +121,10 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         tvTaskId.setText(String.valueOf(task.getId()));
         tvTimeRequire.setText(task.getTime_require());
         tvTimeCreate.setText(task.getTime_created());
+        address5.setText("AMNT. " + String.valueOf(task.getCount()));
+        for(Assign assign : task.getAssign()){
+            tvAssign.append(" | " + assign.getStaff().getName());
+        }
         this.showingStatus();
 
     }
@@ -119,17 +133,14 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
     public void showingStatus() {
         switch (task.getStatus()){
             case 0: {
-                tvStatus.setText("New");
                 imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_new));
                 break;
             }
             case 1: {
-                tvStatus.setText("Progress");
                 imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_problem));
                 break;
             }
             case 2: {
-                tvStatus.setText("Completed");
                 imgStatus.setImageDrawable(getResources().getDrawable(R.drawable.ic_completed));
                 break;
             }

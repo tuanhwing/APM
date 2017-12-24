@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
 import graduating.project.com.apm.presenter.MainPresenter;
 
@@ -61,17 +62,6 @@ public class SocketEvent {
         }
     };
 
-    private Emitter.Listener onErrorUpdateStatus = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(activity,"error update status",Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    };
 
     private Emitter.Listener onUpdateStatusTask = new Emitter.Listener() {
         @Override
@@ -99,7 +89,17 @@ public class SocketEvent {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(activity,String.valueOf(args[0]),Toast.LENGTH_SHORT).show();
+                    Log.d("assign_task",String.valueOf(args[0]));
+                    Gson gson = new Gson();
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Boolean err = data.getBoolean("error");
+                        if(!err){
+                            presenter.updateAssignTask(gson.fromJson(data.getString("content"),Assign.class));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
@@ -160,10 +160,6 @@ public class SocketEvent {
     }
 
     public Emitter.Listener getOnConnected() { return onConnected; }
-
-    public Emitter.Listener getOnErrorUpdateStatus() {
-        return onErrorUpdateStatus;
-    }
 
     public Emitter.Listener getOnUpdateStatusTask() {
         return onUpdateStatusTask;

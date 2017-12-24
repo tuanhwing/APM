@@ -11,25 +11,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.rey.material.widget.Slider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import graduating.project.com.apm.dialog.PopupAssignedStaff;
+import graduating.project.com.apm.exclass.InforTaskView;
 import graduating.project.com.apm.model.DetailHelper;
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
 import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.presenter.DetailPresenter;
@@ -37,7 +44,6 @@ import graduating.project.com.apm.socket.SocketEventDetail;
 import graduating.project.com.apm.socket.SocketSingleton;
 import graduating.project.com.apm.view.DetailView;
 
-import static graduating.project.com.apm.R.id.btn_assign;
 
 /**
  * Created by xmuSistone on 2016/9/19.
@@ -54,7 +60,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     public static final String TIME_REQUIRE_TRANSITION_NAME = "tv_time_require";
     public static final String ADDRESS2_TRANSITION_NAME = "address2";
     public static final String TIME_CREATE_TRANSITION_NAME = "address3";
-//    public static final String OTHER_REQUIRE_TRANSITION_NAME = "address4";
+    public static final String ASSIGN_TRANSITION_NAME = "address4";
     public static final String ADDRESS5_TRANSITION_NAME = "address5";
     public static final String TASK_ID_TRANSITION_NAME = "tv_taskid";
     public static final String RATINGBAR_TRANSITION_NAME = "ratingBar";
@@ -64,17 +70,37 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     public static final String HEAD3_TRANSITION_NAME = "head3";
     public static final String HEAD4_TRANSITION_NAME = "head4";
 
-    private TextView tvName, tvCount, tvCoverColor, tvCoverPaper, tvBookBindingType, tvPaperInfo, tvFile;
-    private TextView tvTaskId, tvTimeRequire, tvTimeCreate, tvOtherRequire;
-    private Button btnAssign;
-    private Slider address5;
+//    private TextView tvName, tvCount, tvCoverColor, tvCoverPaper, tvBookBindingType, tvPaperInfo, tvFile,tvOtherRequire;
+    private TextView tvTaskId, tvTimeRequire, tvTimeCreate;
+    private EditText edIssue;
+    private ImageView imgSend;
+    private ImageView imgAssign;
+    private TextView address5;
     private View address2;
     private ImageView imageView;
     private RatingBar ratingBar;
-    private RadioGroup radioGroup;
+    private RadioButton rdNew, rdProgress, rdCompleted;
+    @BindView(R.id.cb_new)
+    CheckBox cbNew;
+    @BindView(R.id.cb_progress)
+    CheckBox cbProgress;
+    @BindView(R.id.cb_completed)
+    CheckBox cbCompleted;
+    @BindView(R.id.detail_info_task)
+    LinearLayout listInfoTask;
+    @BindView(R.id.layout_detailtask)
+    RelativeLayout rlInfoTask;
+    //[START]Button show detail task
+    @BindView(R.id.img_show_detail)
+    ImageView imgShowDetail;
+    //[END]Button show detail task
+    @BindView(R.id.tv_assign)
+    TextView tvAssign;
+
 
     private Task task;
     SocketEventDetail socketEventDetail;
+    private InforTaskView inforTaskView;
 
     private LinearLayout listContainer;
     private static final String[] headStrs = {HEAD1_TRANSITION_NAME, HEAD2_TRANSITION_NAME, HEAD3_TRANSITION_NAME, HEAD4_TRANSITION_NAME};
@@ -84,7 +110,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
+        ButterKnife.bind(this);
 
         //[START] Init MVP
         if (savedInstanceState != null) {
@@ -103,6 +129,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         SocketSingleton.getInstance().getSocket().on("server-send-issue-to-all",socketEventDetail.getOnNewIssue());
         SocketSingleton.getInstance().getSocket().on("server-send-update-status-task",socketEventDetail.getOnUpdateStatus());
         SocketSingleton.getInstance().getSocket().on("server-send-assign-to-all",socketEventDetail.getOnAssignTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-assign-result",socketEventDetail.getOnResultAssign());
+        SocketSingleton.getInstance().getSocket().on("error-update-status-task",socketEventDetail.getOnErrorUpdateStatusTask());
 
         addControlls();
         addEvents();
@@ -114,36 +142,39 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
+        fillContent();
+        dealListView();
+    }
+
+    private void fillContent() {
         String imageUrl = getIntent().getStringExtra(EXTRA_IMAGE_URL);
         ImageLoader.getInstance().displayImage(imageUrl, imageView);
 
+        inforTaskView = new InforTaskView(this);
         tvTaskId.setText(String.valueOf(task.getId()));
-        tvName.setText("NAME: " + task.getName());
-        tvCount.setText("COUNT: " + String.valueOf(task.getCount()));
-        tvCoverColor.setText("COVER_COLOR: " + task.getCover_color());
-        tvCoverPaper.setText("COVER_PAPER: " + task.getCover_paper());
-        tvPaperInfo.setText("PAPER INFO: " + task.getPaper_info());
-        tvBookBindingType.setText("BOOKBINDING_TYPE: " + task.getBookbinding_type());
-        tvFile.setText("FILE: " + task.getFile());
 
+        address5.setText("AMNT. " + String.valueOf(task.getCount()));
         tvTimeRequire.setText(task.getTime_require());
         tvTimeCreate.setText(task.getTime_created());
-        tvOtherRequire.setText("OTHER_REQUIRE: " + task.getOther_require());
-//        address5.setText("NO. " + String.valueOf(task.getCount()));
-        if(task.getStatus() == 0) radioGroup.check(R.id.rd_1);
-        if(task.getStatus() == 1) radioGroup.check(R.id.rd_2);
-        if(task.getStatus() == 2) radioGroup.check(R.id.rd_3);
+        imgShowDetail.bringToFront();
+
+        if(task.getStatus() == 0) cbNew.setChecked(true);
+        if(task.getStatus() == 1) cbProgress.setChecked(true);
+        if(task.getStatus() == 2) cbCompleted.setChecked(true);
+
+        //Temp text view Assign
+        for(Assign assign: task.getAssign()){
+            tvAssign.append(assign.getStaff().getName() + "\n");
+        }
 
         ViewCompat.setTransitionName(imageView, IMAGE_TRANSITION_NAME);
         ViewCompat.setTransitionName(tvTaskId, TASK_ID_TRANSITION_NAME);
         ViewCompat.setTransitionName(tvTimeRequire, TIME_REQUIRE_TRANSITION_NAME);
         ViewCompat.setTransitionName(address2, ADDRESS2_TRANSITION_NAME);
         ViewCompat.setTransitionName(tvTimeCreate, TIME_CREATE_TRANSITION_NAME);
-//        ViewCompat.setTransitionName(tvOtherRequire, OTHER_REQUIRE_TRANSITION_NAME);
+        ViewCompat.setTransitionName(tvAssign, ASSIGN_TRANSITION_NAME);
         ViewCompat.setTransitionName(address5, ADDRESS5_TRANSITION_NAME);
         ViewCompat.setTransitionName(ratingBar, RATINGBAR_TRANSITION_NAME);
-
-        dealListView();
     }
 
     @Override
@@ -152,13 +183,18 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         SocketSingleton.getInstance().getSocket().off("server-send-issue-to-all",socketEventDetail.getOnNewIssue());
         SocketSingleton.getInstance().getSocket().off("server-send-update-status-task",socketEventDetail.getOnUpdateStatus());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all",socketEventDetail.getOnAssignTask());
+        SocketSingleton.getInstance().getSocket().off("server-send-assign-result",socketEventDetail.getOnResultAssign());
+        SocketSingleton.getInstance().getSocket().off("error-update-status-task",socketEventDetail.getOnErrorUpdateStatusTask());
     }
 
     private void addEvents() {
-//        tvOtherRequire.setOnClickListener(this);
-        btnAssign.setOnClickListener(this);
+        imgAssign.setOnClickListener(this);
         ratingBar.setOnClickListener(this);
-        radioGroup.setOnCheckedChangeListener(this);
+        imgShowDetail.setOnClickListener(this);
+        cbNew.setOnClickListener(this);
+        cbProgress.setOnClickListener(this);
+        cbCompleted.setOnClickListener(this);
+        imgSend.setOnClickListener(this);
     }
 
     private void addControlls() {
@@ -167,21 +203,13 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         tvTimeRequire = (TextView) findViewById(R.id.tv_time_require);
         address2 = findViewById(R.id.address2);
         tvTimeCreate = (TextView) findViewById(R.id.tv_time_create);
-        tvOtherRequire = (TextView) findViewById(R.id.tv_other_require);
-        address5 = (Slider) findViewById(R.id.address5);
+        address5 = (TextView) findViewById(R.id.address5);
         ratingBar = (RatingBar) findViewById(R.id.rating);
         listContainer = (LinearLayout) findViewById(R.id.detail_list_container);
+        edIssue = (EditText) findViewById(R.id.ed_issue);
+        imgSend = (ImageView) findViewById(R.id.img_send);
 
-        tvName = (TextView) findViewById(R.id.tv_name);
-        tvCount = (TextView) findViewById(R.id.tv_count);
-        tvCoverColor = (TextView) findViewById(R.id.tv_cover_color);
-        tvCoverPaper = (TextView) findViewById(R.id.tv_cover_paper);
-        tvPaperInfo = (TextView) findViewById(R.id.tv_paper_info);
-        tvBookBindingType = (TextView) findViewById(R.id.tv_bookbinding_type);
-        tvFile = (TextView) findViewById(R.id.tv_file);
-        btnAssign = (Button) findViewById(btn_assign);
-
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        imgAssign = (ImageView) findViewById(R.id.img_assign);
     }
 
     private void dealListView() {
@@ -204,12 +232,24 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
                 ViewCompat.setTransitionName(headView, headStrs[i]);
             }
         }
+
+
+        //Temp detail info task view
+        listInfoTask.addView(inforTaskView.getViewNameTask(task.getName(),"name"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(String.valueOf(task.getCount()),"count"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(task.getCover_color(),"cover color"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(task.getCover_paper(),"cover paper"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(task.getBookbinding_type(),"bookbinding type"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(task.getPaper_info(),"paper info"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(task.getOther_require(),"other require"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(task.getFile(), "file"));
+        //Temp detail info task view
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_assign: {
+            case R.id.img_assign: {
 //                SocketSingleton.getInstance().getSocket().emit("get-list-staff");
                 PopupAssignedStaff cdd = new PopupAssignedStaff(DetailActivity.this, MainActivity.staffs, task.getAssign(),task.getId());
                 cdd.show();
@@ -219,7 +259,62 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 
                 break;
             }
+
+            case R.id.img_send: {
+                String content = String.valueOf(edIssue.getText());
+                if(!content.isEmpty() || content != null)
+                    try {
+                        detailPresenter.sendNewIssueToServer(content,task.getId());
+                    } catch (JSONException e) {
+                        Log.d("send_issue_aaaa",String.valueOf(e.getMessage()));
+                    }
+                break;
+            }
+
+            case R.id.cb_new: {
+                if(task.getStatus() == 0 && cbNew.isChecked()) break;
+                updateStatusTaskToServer(0);
+                break;
+            }
+            case R.id.cb_progress: {
+                if(task.getStatus() == 1 && cbProgress.isChecked()) break;
+                updateStatusTaskToServer(1);
+                break;
+            }
+
+            case R.id.cb_completed: {
+                if(task.getStatus() == 2 && cbCompleted.isChecked()) break;
+                updateStatusTaskToServer(2);
+                break;
+            }
+
+            case R.id.img_show_detail:{
+                if(rlInfoTask.getVisibility() == View.VISIBLE){
+                    Animation out = AnimationUtils.makeOutAnimation(this, true);
+                    rlInfoTask.startAnimation(out);
+                    rlInfoTask.setVisibility(View.INVISIBLE);
+                    imgShowDetail.animate().rotation(0).start();
+                } else {
+                    Animation in = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+                    rlInfoTask.startAnimation(in);
+                    rlInfoTask.setVisibility(View.VISIBLE);
+                    imgShowDetail.animate().rotation(180).start();
+                }
+
+                break;
+            }
         }
+    }
+
+    public void updateStatusTaskToServer(int status){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("taskid",task.getId());
+            json.put("status",status);
+        } catch (JSONException e) {
+            Log.d("update-status-task",String.valueOf(e.getMessage()));
+        }
+        SocketSingleton.getInstance().getSocket().emit("update-status-task", json);
     }
 
     @Override
@@ -227,15 +322,15 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         RadioButton rb = (RadioButton) group.findViewById(checkedId);
         int status = -1;
         switch (checkedId){
-            case R.id.rd_1: {
+            case R.id.cb_new: {
                 if(task.getStatus() != 0) status = 0;
                 break;
             }
-            case R.id.rd_2: {
+            case R.id.cb_progress: {
                 if(task.getStatus() != 1) status = 1;
                 break;
             }
-            case R.id.rd_3: {
+            case R.id.cb_completed: {
                 if(task.getStatus() != 2) status = 2;
                 break;
             }
@@ -277,6 +372,49 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     public void updateStatus(int taskid, int status) {
         if(taskid != task.getId()) return;
         task.setStatus(status);
+        switch (status){
+            case 0: {
+//                radioGroup.check(R.id.rd_1);
+//                rdNew.setChecked(true);
+//                rdProgress.setChecked(false);
+//                rdCompleted.setChecked(false);
+
+                cbNew.setChecked(true);
+                cbProgress.setChecked(false);
+                cbCompleted.setChecked(false);
+
+                break;
+            }
+            case 1:{
+//                radioGroup.check(R.id.rd_2);
+//                rdNew.setChecked(false);
+//                rdProgress.setChecked(true);
+//                rdCompleted.setChecked(false);
+
+                cbNew.setChecked(false);
+                cbProgress.setChecked(true);
+                cbCompleted.setChecked(false);
+                break;
+            }
+            case 2:{
+//                radioGroup.check(R.id.rd_3);
+//                rdNew.setChecked(false);
+//                rdProgress.setChecked(false);
+//                rdCompleted.setChecked(true);
+
+                cbNew.setChecked(false);
+                cbProgress.setChecked(false);
+                cbCompleted.setChecked(true);
+                break;
+            }
+        }
         Toast.makeText(DetailActivity.this,"update status task success", Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void updateAssignTask(Assign assign) {
+        task.getAssign().add(assign);
+    }
+
+
 }
