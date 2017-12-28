@@ -449,9 +449,9 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.img_btn: {
-                fragments.remove(0);
-                tasks.remove(0);
-                this.setAdapterForViewPager(fragments);
+//                fragments.remove(0);
+//                tasks.remove(0);
+//                this.setAdapterForViewPager(fragments);
                 break;
             }
 
