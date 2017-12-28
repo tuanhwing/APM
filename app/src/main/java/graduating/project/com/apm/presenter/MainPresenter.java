@@ -40,6 +40,10 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
 //        view.updateIndicatorTv();
     }
 
+    public void updateIndicatorTv(){
+        view.updateIndicatorTv();
+    }
+
 
     public void convertJsonToListTasks(Object... objects){
         Log.d("json_async_aaa","presenter1");

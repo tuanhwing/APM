@@ -98,6 +98,7 @@ public class TaskFilter extends Filter {
         mainPagerAdapter.setTasks((ArrayList<CommonFragment>) results.values);
         //refresh
         mainPagerAdapter.notifyDataSetChanged();
+        mainPresenter.updateIndicatorTv();
 //        mainPresenter.setAdapterForViewpager((ArrayList<CommonFragment>) results.values);
 
 //        }
