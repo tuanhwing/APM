@@ -36,5 +36,7 @@ public interface MainView {
 
     void addNewIssue(Issue issue);
 
+    void setCurrentItemViewpager(int position);
+
 
 }

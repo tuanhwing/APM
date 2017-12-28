@@ -35,6 +35,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import graduating.project.com.apm.dialog.PopupAssignedStaff;
 import graduating.project.com.apm.exclass.InforTaskView;
+import graduating.project.com.apm.exclass.MyDate;
+import graduating.project.com.apm.exclass.TimerAsync;
 import graduating.project.com.apm.model.DetailHelper;
 import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
@@ -69,6 +71,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     public static final String HEAD2_TRANSITION_NAME = "head2";
     public static final String HEAD3_TRANSITION_NAME = "head3";
     public static final String HEAD4_TRANSITION_NAME = "head4";
+
+    private TimerAsync timerAsync;//TImer
 
 //    private TextView tvName, tvCount, tvCoverColor, tvCoverPaper, tvBookBindingType, tvPaperInfo, tvFile,tvOtherRequire;
     private TextView tvTaskId, tvTimeRequire, tvTimeCreate;
@@ -144,6 +148,17 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 
         fillContent();
         dealListView();
+
+        //[START] TIMER
+        try{
+            Log.d("error_timer_task","create1");
+            timerAsync = new TimerAsync(tvTimeRequire);
+            timerAsync.execute(Integer.parseInt(task.getTime_require()));
+            Log.d("error_timer_task","create2");
+        } catch (Exception e){
+            Log.d("error_timer_task",String.valueOf(e.getMessage()));
+        }
+        //[END] TIMER
     }
 
     private void fillContent() {
@@ -155,14 +170,15 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 
         address5.setText("AMNT. " + String.valueOf(task.getCount()));
         tvTimeRequire.setText(task.getTime_require());
-        tvTimeCreate.setText(task.getTime_created());
+        tvTimeCreate.setText(MyDate.getStringYearMonthDayHMS(task.getTime_created()));
         imgShowDetail.bringToFront();
 
         if(task.getStatus() == 0) cbNew.setChecked(true);
         if(task.getStatus() == 1) cbProgress.setChecked(true);
         if(task.getStatus() == 2) cbCompleted.setChecked(true);
 
-        //Temp text view Assign
+//        Temp text view Assign
+        Log.d("error_assign","Detail " + String.valueOf(task.getAssign().size()));
         for(Assign assign: task.getAssign()){
             tvAssign.append(assign.getStaff().getName() + "\n");
         }
@@ -185,6 +201,10 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all",socketEventDetail.getOnAssignTask());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-result",socketEventDetail.getOnResultAssign());
         SocketSingleton.getInstance().getSocket().off("error-update-status-task",socketEventDetail.getOnErrorUpdateStatusTask());
+        if(timerAsync != null) {
+            timerAsync.cancel(true);
+            Log.d("error_timer_task","destroy");
+        }
     }
 
     private void addEvents() {
@@ -226,7 +246,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 
             tvCMTContent.setText(issues.get(i).getContent());
             tvCMTName.setText("name");
-            tvCMTDate.setText(issues.get(i).getDate());
+            tvCMTDate.setText(MyDate.getStringYearMonthDayHMS(issues.get(i).getDate()));
             if (i < headStrs.length) {
                 headView.setImageResource(imageIds[0]);
                 ViewCompat.setTransitionName(headView, headStrs[i]);
@@ -374,10 +394,6 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         task.setStatus(status);
         switch (status){
             case 0: {
-//                radioGroup.check(R.id.rd_1);
-//                rdNew.setChecked(true);
-//                rdProgress.setChecked(false);
-//                rdCompleted.setChecked(false);
 
                 cbNew.setChecked(true);
                 cbProgress.setChecked(false);
@@ -386,10 +402,6 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
                 break;
             }
             case 1:{
-//                radioGroup.check(R.id.rd_2);
-//                rdNew.setChecked(false);
-//                rdProgress.setChecked(true);
-//                rdCompleted.setChecked(false);
 
                 cbNew.setChecked(false);
                 cbProgress.setChecked(true);
@@ -397,10 +409,6 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
                 break;
             }
             case 2:{
-//                radioGroup.check(R.id.rd_3);
-//                rdNew.setChecked(false);
-//                rdProgress.setChecked(false);
-//                rdCompleted.setChecked(true);
 
                 cbNew.setChecked(false);
                 cbProgress.setChecked(false);
@@ -414,6 +422,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     @Override
     public void updateAssignTask(Assign assign) {
         task.getAssign().add(assign);
+        tvAssign.append(assign.getStaff().getName() + "\n");
     }
 
 

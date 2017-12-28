@@ -2,44 +2,46 @@ package graduating.project.com.apm.exclass;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
-import graduating.project.com.apm.CommonFragment;
+import android.widget.TextView;
 
 /**
  * Created by Tuan on 23/12/2017.
  */
 
 public class TimerAsync extends AsyncTask<Integer, Integer, Void> {
-    CommonFragment commonFragment;
+    TextView textView;
     public TimerAsync (){
 
     }
 
 
-    public TimerAsync(CommonFragment commonFragment){
-        this.commonFragment = commonFragment;
+    public TimerAsync(TextView textView){
+        this.textView = textView;
     }
 
     @Override
     protected Void doInBackground(Integer... params) {
         while(true){
             if(params[0] == 0) break;
-
+            Log.d("error_timer_task", "inloop_" +String.valueOf(params[0]));
             try {
                 Thread.sleep(1000);
                 params[0] -= 1;
                 publishProgress(params);
             } catch (InterruptedException e) {
-                Log.d("timer_async", String.valueOf(e.getMessage()));
+                Log.d("error_timer_task", "catch_loop_" + String.valueOf(e.getMessage()));
+                return null;
             }
         }
+        Log.d("error_timer_task", "inloop_break");
         return null;
     }
 
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
-        commonFragment.updateTimerequire(String.valueOf(values[0]));
+        textView.setText(String.valueOf(values[0]));
+        Log.d("error_timer_task", "inloop_updateprogress_" +String.valueOf(values[0]));
     }
 
     @Override

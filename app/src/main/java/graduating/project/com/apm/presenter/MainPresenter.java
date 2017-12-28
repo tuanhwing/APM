@@ -71,6 +71,10 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
         view.setAdapterForViewPager(fragments);
     }
 
+    public void setCurrentItemViewpager(int position){
+        view.setCurrentItemViewpager(position);
+    }
+
     @Override
     public void onGetTaskSucess(ArrayList<Task> tasks) {
         view.saveListTasks(tasks);

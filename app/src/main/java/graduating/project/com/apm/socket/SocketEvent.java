@@ -56,6 +56,7 @@ public class SocketEvent {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("log_task_AAAAlist_n",String.valueOf(args[0]));
                     presenter.newAddedTask(args);
                 }
             });
@@ -142,6 +143,7 @@ public class SocketEvent {
             });
         }
     };
+    
 
     public SocketEvent(){
     }

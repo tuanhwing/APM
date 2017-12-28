@@ -45,7 +45,7 @@
             android:layout_height="38dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/icon2" />
+            android:src="@drawable/icon_new" />
 
         <ImageView
             android:id="@+id/img_btn2"

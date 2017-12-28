@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import graduating.project.com.apm.exclass.DragLayout;
+import graduating.project.com.apm.exclass.MyDate;
 import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.view.CommonView;
@@ -42,6 +43,11 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
 
     public CommonFragment(Task task){
         this.task = task;
+    }
+
+    public void setTask(Task task){
+        this.task = task;
+        Log.e("error_edit_task","set_task _ oncreate " + String.valueOf(this.task.getFile()));
     }
 
     public Task getTask() {
@@ -69,6 +75,8 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         head2 = dragLayout.findViewById(R.id.head2);
         head3 = dragLayout.findViewById(R.id.head3);
         head4 = dragLayout.findViewById(R.id.head4);
+        Log.e("error_edit_task","oncreate " + String.valueOf(task.getId()));
+        Log.e("error_edit_task","oncreate " + String.valueOf(task.getFile()));
 
 //        //temp
 //        TimerAsync timerAsync = new TimerAsync(tvTimeRequire);
@@ -128,14 +136,22 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
 
     @Override
     public void fillContentFragment() {
-        tvTaskId.setText(String.valueOf(task.getId()));
-        tvTimeRequire.setText(task.getTime_require());
-        tvTimeCreate.setText(task.getTime_created());
-        address5.setText("AMNT. " + String.valueOf(task.getCount()));
-        for(Assign assign : task.getAssign()){
-            tvAssign.append(" | " + assign.getStaff().getName());
+        Log.e("error_edit_task_fill",String.valueOf(task.getId()));
+        try {
+            tvTaskId.setText(String.valueOf(task.getId()));
+            tvTimeRequire.setText(MyDate.getStringYearMonthDayHMS(task.getDeadline()));
+            tvTimeCreate.setText(MyDate.getStringYearMonthDay(task.getTime_created()));
+            address5.setText("AMNT. " + String.valueOf(task.getCount()));
+            tvAssign.setText(" ");
+//        Log.d("error_assign","Common " + String.valueOf(task.getAssign().size()));
+            for(Assign assign : task.getAssign()){
+                tvAssign.append(" | " + assign.getStaff().getName());
+            }
+            this.showingStatus();
+        } catch (Exception e){
+            Log.e("error_edit_task_fill",String.valueOf(e.getMessage()));
         }
-        this.showingStatus();
+
 
     }
 

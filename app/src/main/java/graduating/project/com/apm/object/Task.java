@@ -12,6 +12,7 @@ public class Task implements Serializable {
     private String time_require;
     private int status;
     private String time_created;
+    private String deadline;
     private String name;
     private int count;
     private String cover_color;
@@ -30,6 +31,7 @@ public class Task implements Serializable {
                 String time_require,
                 int status,
                 String time_created,
+                String deadline,
                 String name,
                 int count,
                 String cover_color,
@@ -44,6 +46,7 @@ public class Task implements Serializable {
         this.time_require = time_require;
         this.status = status;
         this.time_created = time_created;
+        this.deadline = deadline;
         this.name = name;
         this.count = count;
         this.cover_color = cover_color;
@@ -166,5 +169,13 @@ public class Task implements Serializable {
 
     public void setAssign(List<Assign> assign) {
         this.assign = assign;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
     }
 }

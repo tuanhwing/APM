@@ -95,10 +95,10 @@ public class TaskFilter extends Filter {
 //            fragments.add(new CommonFragment(temp.get(k)));
 //        }
         Log.d("search_filter","9");
-//        mainPagerAdapter.setTasks((ArrayList<CommonFragment>) results.values);
-//        //refresh
-//        mainPagerAdapter.notifyDataSetChanged();
-        mainPresenter.setAdapterForViewpager((ArrayList<CommonFragment>) results.values);
+        mainPagerAdapter.setTasks((ArrayList<CommonFragment>) results.values);
+        //refresh
+        mainPagerAdapter.notifyDataSetChanged();
+//        mainPresenter.setAdapterForViewpager((ArrayList<CommonFragment>) results.values);
 
 //        }
         Log.d("search_filter","10");

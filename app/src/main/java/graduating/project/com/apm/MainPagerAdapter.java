@@ -3,6 +3,7 @@ package graduating.project.com.apm;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -37,7 +38,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter implements Filte
             Log.d("search_adapter",String.valueOf(temp));
             fragments.add(temp);
         }
-
+//        mainPresenter.setCurrentItemViewpager(0);
         filterList = fragments;
     }
 
@@ -61,5 +62,12 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter implements Filte
             taskFilter = new TaskFilter(this, filterList, mainPresenter);
         }
         return taskFilter;
+    }
+
+    //this is called when notifyDataSetChanged() is called
+    @Override
+    public int getItemPosition(Object object){
+        // refresh all fragments when data set changed
+        return PagerAdapter.POSITION_NONE;
     }
 }
