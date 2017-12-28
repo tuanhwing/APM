@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import graduating.project.com.apm.R;
+import graduating.project.com.apm.exclass.MyDate;
 import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.socket.SocketSingleton;
@@ -80,7 +81,7 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
             View childView = layoutInflater.inflate(R.layout.detail_assign_item, null);
             TextView tvName = (TextView) childView.findViewById(R.id.tv_name);
             TextView tvTime = (TextView) childView.findViewById(R.id.tv_date_assign);
-            tvTime.setText(assigns.get(i).getDate());
+            tvTime.setText(MyDate.getStringYearMonthDayHMSZ(assigns.get(i).getDate()));
             tvName.setText(assigns.get(i).getStaff().getName());
             listAssign.addView(childView);
         }

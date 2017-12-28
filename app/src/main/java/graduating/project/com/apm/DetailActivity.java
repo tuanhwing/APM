@@ -246,7 +246,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 
             tvCMTContent.setText(issues.get(i).getContent());
             tvCMTName.setText("name");
-            tvCMTDate.setText(MyDate.getStringYearMonthDayHMS(issues.get(i).getDate()));
+            tvCMTDate.setText(MyDate.getStringYearMonthDayHMSZ(issues.get(i).getDate()));
             if (i < headStrs.length) {
                 headView.setImageResource(imageIds[0]);
                 ViewCompat.setTransitionName(headView, headStrs[i]);
