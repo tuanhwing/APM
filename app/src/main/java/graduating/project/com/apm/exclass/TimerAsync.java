@@ -8,7 +8,7 @@ import android.widget.TextView;
  * Created by Tuan on 23/12/2017.
  */
 
-public class TimerAsync extends AsyncTask<Integer, Integer, Void> {
+public class TimerAsync extends AsyncTask<Long, String, Void> {
     TextView textView;
     public TimerAsync (){
 
@@ -20,14 +20,14 @@ public class TimerAsync extends AsyncTask<Integer, Integer, Void> {
     }
 
     @Override
-    protected Void doInBackground(Integer... params) {
+    protected Void doInBackground(Long... params) {
         while(true){
             if(params[0] == 0) break;
             Log.d("error_timer_task", "inloop_" +String.valueOf(params[0]));
             try {
                 Thread.sleep(1000);
                 params[0] -= 1;
-                publishProgress(params);
+                publishProgress(MyDate.getDayHMSFromTime(params[0]));
             } catch (InterruptedException e) {
                 Log.d("error_timer_task", "catch_loop_" + String.valueOf(e.getMessage()));
                 return null;
@@ -38,7 +38,7 @@ public class TimerAsync extends AsyncTask<Integer, Integer, Void> {
     }
 
     @Override
-    protected void onProgressUpdate(Integer... values) {
+    protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
         textView.setText(String.valueOf(values[0]));
         Log.d("error_timer_task", "inloop_updateprogress_" +String.valueOf(values[0]));

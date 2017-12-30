@@ -32,6 +32,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import graduating.project.com.apm.dialog.PopupListStaff;
+import graduating.project.com.apm.dialog.PopupListTask;
 import graduating.project.com.apm.exclass.CustPagerTransformer;
 import graduating.project.com.apm.model.MainHelper;
 import graduating.project.com.apm.object.Assign;
@@ -191,6 +193,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         SocketSingleton.getInstance().getSocket().on("server-send-assign-to-all", socketEvent.getOnAssignTask());
         SocketSingleton.getInstance().getSocket().on("server-send-issue-to-all", socketEvent.getOnNewIssue());
         SocketSingleton.getInstance().getSocket().connect();
+
     }
 
     private void addEvents() {
@@ -441,7 +444,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void setCurrentItemViewpager(int position) {
-
+        viewPager.setCurrentItem(position);
     }
 
 
@@ -452,14 +455,19 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 //                fragments.remove(0);
 //                tasks.remove(0);
 //                this.setAdapterForViewPager(fragments);
+
                 break;
             }
 
             case R.id.img_btn1:{
+                PopupListTask popupListTask = new PopupListTask(this, fragments,mainPresenter);
+                popupListTask.show();
                 break;
             }
 
             case R.id.img_btn2:{
+                PopupListStaff popupListStaff = new PopupListStaff(this,staffs);
+                popupListStaff.show();
                 break;
             }
 

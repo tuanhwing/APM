@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import graduating.project.com.apm.CommonFragment;
 import graduating.project.com.apm.MainActivity;
 import graduating.project.com.apm.MainPagerAdapter;
+import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.presenter.MainPresenter;
 
@@ -61,6 +62,12 @@ public class TaskFilter extends Filter {
                 String id = String.valueOf(t.getId());
                 if(id.toLowerCase().contains(constraint)){
                     filteredTask.add(new CommonFragment(t));
+                } else {
+                    for(Assign assign : t.getAssign()){
+                        if(assign.getStaff().getName().contains(constraint)) {
+                            filteredTask.add(new CommonFragment(t));
+                        }
+                    }
                 }
 //                try {
 //                    int i = t.getId() / 10;
@@ -99,6 +106,7 @@ public class TaskFilter extends Filter {
         //refresh
         mainPagerAdapter.notifyDataSetChanged();
         mainPresenter.updateIndicatorTv();
+
 //        mainPresenter.setAdapterForViewpager((ArrayList<CommonFragment>) results.values);
 
 //        }

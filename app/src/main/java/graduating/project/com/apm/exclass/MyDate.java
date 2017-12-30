@@ -57,4 +57,17 @@ public class MyDate {
         if(date == null) return "Date invalid!";
         return String.valueOf(DateFormat.format("dd-MM-yyyy HH:mm:ss", date));
     }
+
+    public static String getDayHMSFromTime(Long time){
+        String result = "invalid";
+        try {
+            result = String.valueOf(time/(60*60*24)) + "day "
+                    + String.valueOf((time%(60*60*24))/(60*60)) + "h"
+                    + String.valueOf((time%(60*60))/(60)) + "m"
+                    + String.valueOf(time%60) + "s";
+        } catch (Exception e){
+            Log.e("error_parse_datetime",String.valueOf(e.getMessage()));
+        }
+        return result;
+    }
 }

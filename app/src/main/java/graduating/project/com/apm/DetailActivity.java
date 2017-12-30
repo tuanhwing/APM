@@ -29,6 +29,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -152,8 +154,19 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         //[START] TIMER
         try{
             Log.d("error_timer_task","create1");
-            timerAsync = new TimerAsync(tvTimeRequire);
-            timerAsync.execute(Integer.parseInt(task.getTime_require()));
+//            Date currentDate = Calendar.getInstance().getTime();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            timerAsync.execute(Integer.parseInt(task.getTime_require()));
+            Date deadline = format.parse(task.getDeadline());
+            if(deadline.getTime() > System.currentTimeMillis()){
+                timerAsync = new TimerAsync(tvTimeRequire);
+                timerAsync.execute((deadline.getTime() - System.currentTimeMillis())/1000);
+                Log.d("error_timer_task","compare 1_ " + String.valueOf(deadline.getTime() - System.currentTimeMillis()));
+            } else {
+                tvTimeRequire.setText(MyDate.getStringYearMonthDayHMS(task.getDeadline()));
+                Log.d("error_timer_task","compare 2");
+            }
+            timerAsync.execute();
             Log.d("error_timer_task","create2");
         } catch (Exception e){
             Log.d("error_timer_task",String.valueOf(e.getMessage()));
