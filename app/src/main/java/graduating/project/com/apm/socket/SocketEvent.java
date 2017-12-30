@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
+import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.presenter.MainPresenter;
 
 /**
@@ -58,6 +59,26 @@ public class SocketEvent {
                 public void run() {
                     Log.d("log_task_AAAAlist_n",String.valueOf(args[0]));
                     presenter.newAddedTask(args);
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onUpdateTask = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Gson gson = new Gson();
+                    for (Object temp : args){
+                        JSONObject data = (JSONObject) temp;
+                        try {
+                            presenter.updateTask(gson.fromJson(data.getString("content"),Task.class));
+                        } catch (JSONException e) {
+                            Log.e("error_edit_task",String.valueOf(e.getMessage()));
+                        }
+                    }
                 }
             });
         }
@@ -174,4 +195,6 @@ public class SocketEvent {
     public Emitter.Listener getOnListStaffs() { return onListStaffs; }
 
     public Emitter.Listener getOnNewIssue() { return onNewIssue; }
+
+    public Emitter.Listener getOnUpdateTask() { return onUpdateTask; }
 }

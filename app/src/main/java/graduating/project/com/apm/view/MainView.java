@@ -28,6 +28,8 @@ public interface MainView {
 
     void addNewTaskIntoAdapter(Task task);
 
+    void updateTask(Task task);
+
     void updateStatusTask(int taskid, int status);
 
     void updateAssignTask(Assign assign);

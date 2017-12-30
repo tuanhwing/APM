@@ -40,6 +40,7 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
 //        view.updateIndicatorTv();
     }
 
+
     public void updateIndicatorTv(){
         view.updateIndicatorTv();
     }
@@ -57,6 +58,10 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
 
     public void newAddedTask(Object... objects){
         model.convertJsonToTask(this,objects);
+    }
+
+    public void updateTask(Task task){
+        view.updateTask(task);
     }
 
     public void updateStatusTask(int taskid, int status){

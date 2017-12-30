@@ -187,7 +187,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         SocketSingleton.getInstance().getSocket().on("send-list-tasks-to-client",socketEvent.getOnListTask());
         SocketSingleton.getInstance().getSocket().on("server-send-list-staff", socketEvent.getOnListStaffs());
         SocketSingleton.getInstance().getSocket().on("server-send-new-task-to-all",socketEvent.getOnNewTask());
-        SocketSingleton.getInstance().getSocket().on("response-edit-task",socketEvent.getOnNewTask());
+        SocketSingleton.getInstance().getSocket().on("response-edit-task",socketEvent.getOnUpdateTask());
         SocketSingleton.getInstance().getSocket().on("connect-ok", socketEvent.getOnConnected());
         SocketSingleton.getInstance().getSocket().on("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
         SocketSingleton.getInstance().getSocket().on("server-send-assign-to-all", socketEvent.getOnAssignTask());
@@ -259,7 +259,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         SocketSingleton.getInstance().getSocket().disconnect();
         SocketSingleton.getInstance().getSocket().off("send-list-tasks-to-client", socketEvent.getOnListTask());
         SocketSingleton.getInstance().getSocket().off("server-send-new-task-to-all",socketEvent.getOnNewTask());
-        SocketSingleton.getInstance().getSocket().off("response-edit-task",socketEvent.getOnNewTask());
+        SocketSingleton.getInstance().getSocket().off("response-edit-task",socketEvent.getOnUpdateTask());
         SocketSingleton.getInstance().getSocket().off("connect-ok", socketEvent.getOnConnected());
         SocketSingleton.getInstance().getSocket().off("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all", socketEvent.getOnAssignTask());
@@ -336,20 +336,6 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void addNewTaskIntoAdapter(Task task) {
-        Log.e("error_edit_task", String.valueOf(task.getId()));
-        int i=0;
-        while (true){
-            if(i >= fragments.size()) break;
-            Log.e("error_edit_task", String.valueOf(fragments.get(i).getTask().getId()));
-            if(fragments.get(i).getTask().getId() == task.getId()){
-                fragments.get(i).setTask(task);
-                fragments.get(i).fillContentFragment();
-                Toast.makeText(MainActivity.this, "edit task", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            i++;
-        }
-
         tasks.add(task);
         Log.d("log_task_AAAAlist_n",String.valueOf(task.getId()));
         if(fragments.size() == 0){
@@ -361,6 +347,27 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
             mainPagerAdapter.notifyDataSetChanged();
         }
         this.updateIndicatorTv();
+    }
+
+    @Override
+    public void updateTask(Task task) {
+        Log.e("error_edit_task", "main " + String.valueOf(task.getId()));
+        int i=0;
+        while (true){
+            if(i >= fragments.size()) break;
+            if(tasks.get(i).getId() == task.getId()) {
+                tasks.set(i,task);
+            }
+            if(fragments.get(i).getTask().getId() == task.getId()){
+                Log.e("error_edit_task", "main_compare_" + String.valueOf(fragments.get(i).getTask().getId()));
+                fragments.get(i).setTask(task);
+                fragments.get(i).fillContentFragment();
+                Toast.makeText(MainActivity.this, "edit task", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            i++;
+        }
+
     }
 
     @Override

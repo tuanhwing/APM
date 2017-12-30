@@ -172,6 +172,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
             Log.d("error_timer_task",String.valueOf(e.getMessage()));
         }
         //[END] TIMER
+
+        Log.e("error_edit_task", "Detail_" + String.valueOf(task.getFile()));
     }
 
     private void fillContent() {
