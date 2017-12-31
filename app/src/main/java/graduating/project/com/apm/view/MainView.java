@@ -32,6 +32,8 @@ public interface MainView {
 
     void updateStatusTask(int taskid, int status);
 
+    void updateTypeTask(int taskid, String type);
+
     void updateAssignTask(Assign assign);
 
     void addListStaffs(List<Staff> staffs);

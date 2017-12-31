@@ -96,8 +96,6 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_cancel:{
-
-                Toast.makeText(activity,"LOL tv cancel", Toast.LENGTH_LONG).show();
                 dismiss();
                 break;
             }

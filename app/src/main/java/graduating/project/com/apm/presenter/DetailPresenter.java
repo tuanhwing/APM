@@ -6,6 +6,7 @@ import graduating.project.com.apm.callback.DetailResult;
 import graduating.project.com.apm.model.DetailHelper;
 import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
+import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.view.DetailView;
 
 /**
@@ -36,5 +37,13 @@ public class DetailPresenter implements DetailResult {
 
     public void updateNewAssign(Assign assign) {
         view.updateAssignTask(assign);
+    }
+
+    public void updateTask(Task task) {
+        view.updateTask(task);
+    }
+
+    public void updateTypeTask(int taskid, String type) {
+        view.updateTypeTask(taskid, type);
     }
 }

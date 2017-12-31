@@ -106,6 +106,16 @@
         android:layout_height="1px"
         android:background="#34495e" />
 
+    <TextView
+        android:id="@+id/tv_type"
+        android:maxLines="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#34495e" />
+
     <Button
         android:id="@+id/btn_detail"
         android:text="Detail"

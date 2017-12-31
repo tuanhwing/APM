@@ -69,6 +69,7 @@ public class PopupListTask extends Dialog implements View.OnClickListener {
             TextView tvPaperInfo = (TextView) childView.findViewById(R.id.tv_paper_info);
             TextView tvOtherRequire = (TextView) childView.findViewById(R.id.tv_other_require);
             TextView tvFile = (TextView) childView.findViewById(R.id.tv_file);
+            TextView tvType = (TextView) childView.findViewById(R.id.tv_type);
             Button btnDetail = (Button) childView.findViewById(R.id.btn_detail);
 
             //fill content
@@ -83,6 +84,7 @@ public class PopupListTask extends Dialog implements View.OnClickListener {
             tvPaperInfo.setText("PaperInfo: " + fragments.get(i).getTask().getPaper_info());
             tvOtherRequire.setText("OtherRequire: " + fragments.get(i).getTask().getOther_require());
             tvFile.setText("File: " + fragments.get(i).getTask().getFile());
+            tvType.setText("Type: " + fragments.get(i).getTask().getType());
             final int finalI = i;
             btnDetail.setOnClickListener(new View.OnClickListener() {
                 @Override

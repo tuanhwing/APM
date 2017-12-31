@@ -357,12 +357,23 @@
                         android:layout_height="match_parent"
                         android:background="#ecf0f1"
                         android:orientation="horizontal">
-                        <ImageView
-                            android:id="@+id/img_assign"
-                            android:layout_margin="5dp"
-                            android:src="@drawable/image_assign_selector"
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+                            <ImageView
+                                android:id="@+id/img_assign"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/image_assign_selector"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <ImageView
+                                android:id="@+id/img_update"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/image_assign_selector"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
                         <TextView
                             android:id="@+id/tv_assign"
                             android:layout_marginLeft="5dp"

@@ -187,6 +187,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         SocketSingleton.getInstance().getSocket().on("send-list-tasks-to-client",socketEvent.getOnListTask());
         SocketSingleton.getInstance().getSocket().on("server-send-list-staff", socketEvent.getOnListStaffs());
         SocketSingleton.getInstance().getSocket().on("server-send-new-task-to-all",socketEvent.getOnNewTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-update-type-task",socketEvent.getGetOnUpadteTypeTask());
         SocketSingleton.getInstance().getSocket().on("response-edit-task",socketEvent.getOnUpdateTask());
         SocketSingleton.getInstance().getSocket().on("connect-ok", socketEvent.getOnConnected());
         SocketSingleton.getInstance().getSocket().on("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
@@ -260,6 +261,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         SocketSingleton.getInstance().getSocket().off("send-list-tasks-to-client", socketEvent.getOnListTask());
         SocketSingleton.getInstance().getSocket().off("server-send-new-task-to-all",socketEvent.getOnNewTask());
         SocketSingleton.getInstance().getSocket().off("response-edit-task",socketEvent.getOnUpdateTask());
+        SocketSingleton.getInstance().getSocket().off("server-send-update-type-task",socketEvent.getGetOnUpadteTypeTask());
         SocketSingleton.getInstance().getSocket().off("connect-ok", socketEvent.getOnConnected());
         SocketSingleton.getInstance().getSocket().off("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all", socketEvent.getOnAssignTask());
@@ -354,14 +356,16 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         Log.e("error_edit_task", "main " + String.valueOf(task.getId()));
         int i=0;
         while (true){
-            if(i >= fragments.size()) break;
+            if(i >= mainPagerAdapter.getFilterList().size()) break;
             if(tasks.get(i).getId() == task.getId()) {
                 tasks.set(i,task);
             }
-            if(fragments.get(i).getTask().getId() == task.getId()){
-                Log.e("error_edit_task", "main_compare_" + String.valueOf(fragments.get(i).getTask().getId()));
-                fragments.get(i).setTask(task);
-                fragments.get(i).fillContentFragment();
+            if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == task.getId()){
+//                Log.e("error_edit_task", "main_compare_" + String.valueOf(fragments.get(i).getTask().getId()));
+                mainPagerAdapter.getFilterList().get(i).setTask(task);
+                mainPagerAdapter.getFilterList().get(i).fillContentFragment();
+//                fragments.get(i).setTask(task);
+//                fragments.get(i).fillContentFragment();
                 Toast.makeText(MainActivity.this, "edit task", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -379,11 +383,34 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 tasks.get(j).setStatus(status);
                 int i=0;
                 while(true){
-                    if(i >= fragments.size()) break;
-                    if(fragments.get(i).getTask().getId() == taskid){
-                        if(i >= fragments.size()) break;
-                        fragments.get(i).getTask().setStatus(status);
-                        fragments.get(i).showingStatus();
+                    if(i >= mainPagerAdapter.getFilterList().size()) break;
+                    if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == taskid){
+                        if(i >= mainPagerAdapter.getFilterList().size()) break;
+                        mainPagerAdapter.getFilterList().get(i).getTask().setStatus(status);
+                        mainPagerAdapter.getFilterList().get(i).showingStatus();
+                        break;
+                    }
+                    i++;
+                }
+                break;
+            }
+            j++;
+        }
+    }
+
+    @Override
+    public void updateTypeTask(int taskid, String type) {
+        int j=0;
+        while(true){
+            if(tasks.get(j).getId() == taskid){
+                if(j >= tasks.size()) break;
+                tasks.get(j).setType(type);
+                int i=0;
+                while(true){
+                    if(i >= mainPagerAdapter.getFilterList().size()) break;
+                    if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == taskid){
+                        if(i >= mainPagerAdapter.getFilterList().size()) break;
+                        mainPagerAdapter.getFilterList().get(i).getTask().setType(type);
                         break;
                     }
                     i++;
@@ -404,12 +431,12 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 Log.d("error_assign","MainActivity_1  " + String.valueOf(tasks.get(j).getAssign().size()));
                 int i=0;
                 while(true){
-                    if(i >= fragments.size()) break;
-                    if(fragments.get(i).getTask().getId() == assign.getTask_id()){
+                    if(i >= mainPagerAdapter.getFilterList().size()) break;
+                    if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == assign.getTask_id()){
 //                        Log.d("error_assign","MainActivity_2_2  " + String.valueOf(fragments.get(i).getTask().getAssign().size()));
 //                        fragments.get(i).getTask().getAssign().add(assign);
 //                        Log.d("error_assign","MainActivity_2_3  " + String.valueOf(fragments.get(i).getTask().getAssign().size()));
-                        fragments.get(i).showingNewAssign(assign.getStaff().getName());
+                        mainPagerAdapter.getFilterList().get(i).showingNewAssign(assign.getStaff().getName());
                         break;
                     }
                     i++;
@@ -436,9 +463,9 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 tasks.get(j).getIssues().add(issue);
                 int i=0;
                 while(true){
-                    if(i >= fragments.size()) break;
-                    if(fragments.get(i).getTask().getId() == issue.getTask_id()){
-                        fragments.get(i).getTask().getIssues().add(issue);
+                    if(i >= mainPagerAdapter.getFilterList().size()) break;
+                    if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == issue.getTask_id()){
+                        mainPagerAdapter.getFilterList().get(i).getTask().getIssues().add(issue);
                         break;
                     }
                     i++;

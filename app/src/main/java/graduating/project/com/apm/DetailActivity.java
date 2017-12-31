@@ -36,6 +36,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import graduating.project.com.apm.dialog.PopupAssignedStaff;
+import graduating.project.com.apm.dialog.PopupUpdateProcess;
 import graduating.project.com.apm.exclass.InforTaskView;
 import graduating.project.com.apm.exclass.MyDate;
 import graduating.project.com.apm.exclass.TimerAsync;
@@ -96,6 +97,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     LinearLayout listInfoTask;
     @BindView(R.id.layout_detailtask)
     RelativeLayout rlInfoTask;
+    @BindView(R.id.img_update)
+    ImageView imgUpdateType;
     //[START]Button show detail task
     @BindView(R.id.img_show_detail)
     ImageView imgShowDetail;
@@ -134,9 +137,12 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         socketEventDetail = new SocketEventDetail(DetailActivity.this, detailPresenter);
         SocketSingleton.getInstance().getSocket().on("server-send-issue-to-all",socketEventDetail.getOnNewIssue());
         SocketSingleton.getInstance().getSocket().on("server-send-update-status-task",socketEventDetail.getOnUpdateStatus());
+        SocketSingleton.getInstance().getSocket().on("server-send-update-type-task",socketEventDetail.getOnUpadteType());
+        SocketSingleton.getInstance().getSocket().on("response-edit-task",socketEventDetail.getOnUpdateTask());
         SocketSingleton.getInstance().getSocket().on("server-send-assign-to-all",socketEventDetail.getOnAssignTask());
         SocketSingleton.getInstance().getSocket().on("server-send-assign-result",socketEventDetail.getOnResultAssign());
         SocketSingleton.getInstance().getSocket().on("error-update-status-task",socketEventDetail.getOnErrorUpdateStatusTask());
+        SocketSingleton.getInstance().getSocket().on("error-update-type-task",socketEventDetail.getOnErrorUpdateTypeTask());
 
         addControlls();
         addEvents();
@@ -213,9 +219,12 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         super.onDestroy();
         SocketSingleton.getInstance().getSocket().off("server-send-issue-to-all",socketEventDetail.getOnNewIssue());
         SocketSingleton.getInstance().getSocket().off("server-send-update-status-task",socketEventDetail.getOnUpdateStatus());
+        SocketSingleton.getInstance().getSocket().off("server-send-update-type-task",socketEventDetail.getOnUpadteType());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all",socketEventDetail.getOnAssignTask());
+        SocketSingleton.getInstance().getSocket().off("response-edit-task",socketEventDetail.getOnUpdateTask());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-result",socketEventDetail.getOnResultAssign());
         SocketSingleton.getInstance().getSocket().off("error-update-status-task",socketEventDetail.getOnErrorUpdateStatusTask());
+        SocketSingleton.getInstance().getSocket().off("error-update-type-task",socketEventDetail.getOnErrorUpdateTypeTask());
         if(timerAsync != null) {
             timerAsync.cancel(true);
             Log.d("error_timer_task","destroy");
@@ -230,6 +239,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         cbProgress.setOnClickListener(this);
         cbCompleted.setOnClickListener(this);
         imgSend.setOnClickListener(this);
+        imgUpdateType.setOnClickListener(this);
     }
 
     private void addControlls() {
@@ -269,16 +279,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         }
 
 
-        //Temp detail info task view
-        listInfoTask.addView(inforTaskView.getViewNameTask(task.getName(),"name"));
-        listInfoTask.addView(inforTaskView.getViewNameTask(String.valueOf(task.getCount()),"count"));
-        listInfoTask.addView(inforTaskView.getViewNameTask(task.getCover_color(),"cover color"));
-        listInfoTask.addView(inforTaskView.getViewNameTask(task.getCover_paper(),"cover paper"));
-        listInfoTask.addView(inforTaskView.getViewNameTask(task.getBookbinding_type(),"bookbinding type"));
-        listInfoTask.addView(inforTaskView.getViewNameTask(task.getPaper_info(),"paper info"));
-        listInfoTask.addView(inforTaskView.getViewNameTask(task.getOther_require(),"other require"));
-        listInfoTask.addView(inforTaskView.getViewNameTask(task.getFile(), "file"));
-        //Temp detail info task view
+       this.fillDetailTask();
     }
 
     @Override
@@ -336,6 +337,11 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
                     imgShowDetail.animate().rotation(180).start();
                 }
 
+                break;
+            }
+            case R.id.img_update: {
+                PopupUpdateProcess popupUpdateProcess = new PopupUpdateProcess(this,task.getId(),task.getType());
+                popupUpdateProcess.show();
                 break;
             }
         }
@@ -403,6 +409,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 //        }
     }
 
+
+
     @Override
     public void updateStatus(int taskid, int status) {
         if(taskid != task.getId()) return;
@@ -438,6 +446,39 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     public void updateAssignTask(Assign assign) {
         task.getAssign().add(assign);
         tvAssign.append(assign.getStaff().getName() + "\n");
+    }
+
+    @Override
+    public void fillDetailTask() {
+        //Temp detail info task view
+            listInfoTask.addView(inforTaskView.getViewNameTask(task.getName(),"name"));
+            listInfoTask.addView(inforTaskView.getViewNameTask(String.valueOf(task.getCount()),"count"));
+            listInfoTask.addView(inforTaskView.getViewNameTask(task.getCover_color(),"cover color"));
+            listInfoTask.addView(inforTaskView.getViewNameTask(task.getCover_paper(),"cover paper"));
+            listInfoTask.addView(inforTaskView.getViewNameTask(task.getBookbinding_type(),"bookbinding type"));
+            listInfoTask.addView(inforTaskView.getViewNameTask(task.getPaper_info(),"paper info"));
+            listInfoTask.addView(inforTaskView.getViewNameTask(task.getOther_require(),"other require"));
+            listInfoTask.addView(inforTaskView.getViewNameTask(task.getFile(), "file"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(task.getType(), "type"));
+        //Temp detail info task view
+    }
+
+    @Override
+    public void updateTask(Task task) {
+        if(this.task.getId() == task.getId()){
+            this.task = task;
+            //Temp detail info task view
+            listInfoTask.removeAllViews();
+            this.fillDetailTask();
+            //Temp detail info task view
+        }
+    }
+
+    @Override
+    public void updateTypeTask(int taskid, String type) {
+        if(this.task.getId() == taskid){
+            this.task.setType(type);
+        }
     }
 
 

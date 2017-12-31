@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
+import graduating.project.com.apm.object.Task;
 import graduating.project.com.apm.presenter.DetailPresenter;
 
 /**
@@ -48,6 +49,26 @@ public class SocketEventDetail {
         }
     };
 
+    private Emitter.Listener onUpdateTask  = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Gson gson = new Gson();
+                    for (Object temp : args){
+                        JSONObject data = (JSONObject) temp;
+                        try {
+                            presenter.updateTask(gson.fromJson(data.getString("content"),Task.class));
+                        } catch (JSONException e) {
+                            Log.e("error_edit_task",String.valueOf(e.getMessage()));
+                        }
+                    }
+                }
+            });
+        }
+    };
+
     private Emitter.Listener onUpdateStatus = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -67,6 +88,27 @@ public class SocketEventDetail {
             });
         }
     };
+
+    private Emitter.Listener onUpadteType = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        int taskid = data.getInt("taskid");
+                        String type = data.getString("type");
+                        presenter.updateTypeTask(taskid, type);
+                    } catch (JSONException e) {
+                        Log.e("error_update_type",String.valueOf(e.getMessage()));
+                    }
+                    Toast.makeText(activity, "update type", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    };
+
 
     private Emitter.Listener onAssignTask = new Emitter.Listener() {
         @Override
@@ -121,7 +163,30 @@ public class SocketEventDetail {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(activity,"error update status!", Toast.LENGTH_LONG).show();
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Toast.makeText(activity,String.valueOf(data.getString("message")),Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onErrorUpdateTypeTask = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Toast.makeText(activity,String.valueOf(data.getString("message")),Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }
             });
@@ -151,4 +216,10 @@ public class SocketEventDetail {
     public Emitter.Listener getOnResultAssign() { return onResultAssign; }
 
     public Emitter.Listener getOnErrorUpdateStatusTask() { return onErrorUpdateStatusTask; }
+
+    public Emitter.Listener getOnUpdateTask() { return onUpdateTask; }
+
+    public Emitter.Listener getOnUpadteType() { return onUpadteType; }
+
+    public Emitter.Listener getOnErrorUpdateTypeTask() { return onErrorUpdateTypeTask; }
 }

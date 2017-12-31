@@ -68,6 +68,10 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
         view.updateStatusTask(taskid,status);
     }
 
+    public void updateTypeTask(int taskid, String type) {
+        view.updateTypeTask(taskid,type);
+    }
+
     public void updateAssignTask(Assign assign) {
         view.updateAssignTask(assign);
     }

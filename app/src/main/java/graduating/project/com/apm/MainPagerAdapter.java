@@ -42,6 +42,10 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter implements Filte
         filterList = fragments;
     }
 
+    public ArrayList<CommonFragment> getFilterList(){
+        return filterList;
+    }
+
     @Override
     public Fragment getItem(int position) {
         CommonFragment fragment = fragments.get(position);

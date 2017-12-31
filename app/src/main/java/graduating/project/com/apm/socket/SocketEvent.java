@@ -105,6 +105,26 @@ public class SocketEvent {
         }
     };
 
+    private Emitter.Listener onUpadteTypeTask = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        int taskid = data.getInt("taskid");
+                        String type = data.getString("type");
+                        presenter.updateTypeTask(taskid, type);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(activity,String.valueOf(args[0]),Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    };
+
     private Emitter.Listener onAssignTask = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -197,4 +217,6 @@ public class SocketEvent {
     public Emitter.Listener getOnNewIssue() { return onNewIssue; }
 
     public Emitter.Listener getOnUpdateTask() { return onUpdateTask; }
+
+    public Emitter.Listener getGetOnUpadteTypeTask() { return onUpadteTypeTask; }
 }
