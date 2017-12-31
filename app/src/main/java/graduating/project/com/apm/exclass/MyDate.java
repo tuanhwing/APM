@@ -70,4 +70,12 @@ public class MyDate {
         }
         return result;
     }
+
+    public static String getYMDHMSNow(Long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDateandTime = sdf.format(new Date());
+        return currentDateandTime;
+    }
+
+
 }

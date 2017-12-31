@@ -10,15 +10,13 @@ import android.os.Parcelable;
 public class TimeLineModel implements Parcelable {
     private String mMessage;
     private String mDate;
-    private OrderStatus mStatus;
 
     public TimeLineModel() {
     }
 
-    public TimeLineModel(String mMessage, String mDate, OrderStatus mStatus) {
+    public TimeLineModel(String mMessage, String mDate) {
         this.mMessage = mMessage;
         this.mDate = mDate;
-        this.mStatus = mStatus;
     }
 
     public String getMessage() {
@@ -37,14 +35,6 @@ public class TimeLineModel implements Parcelable {
         this.mDate = date;
     }
 
-    public OrderStatus getStatus() {
-        return mStatus;
-    }
-
-    public void setStatus(OrderStatus mStatus) {
-        this.mStatus = mStatus;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -54,14 +44,12 @@ public class TimeLineModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mMessage);
         dest.writeString(this.mDate);
-        dest.writeInt(this.mStatus == null ? -1 : this.mStatus.ordinal());
     }
 
     protected TimeLineModel(Parcel in) {
         this.mMessage = in.readString();
         this.mDate = in.readString();
         int tmpMStatus = in.readInt();
-        this.mStatus = tmpMStatus == -1 ? null : OrderStatus.values()[tmpMStatus];
     }
 
     public static final Parcelable.Creator<TimeLineModel> CREATOR = new Parcelable.Creator<TimeLineModel>() {

@@ -36,11 +36,13 @@ import graduating.project.com.apm.dialog.PopupListStaff;
 import graduating.project.com.apm.dialog.PopupListTask;
 import graduating.project.com.apm.dialog.PopupTimeLine;
 import graduating.project.com.apm.exclass.CustPagerTransformer;
+import graduating.project.com.apm.exclass.MyDate;
 import graduating.project.com.apm.model.MainHelper;
 import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Issue;
 import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.object.Task;
+import graduating.project.com.apm.object.TimeLineModel;
 import graduating.project.com.apm.presenter.MainPresenter;
 import graduating.project.com.apm.socket.SocketEvent;
 import graduating.project.com.apm.socket.SocketSingleton;
@@ -81,6 +83,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     //Content Viewpager
     private ArrayList<CommonFragment> fragments = new ArrayList<>(); // 供ViewPager使用
+    private List<TimeLineModel> mDataList = new ArrayList<>();
     public static ArrayList<Task> tasks = new ArrayList<>();
 //    private final String[] imageArray = {"assets://image1.jpg", "assets://image2.jpg", "assets://image3.jpg", "assets://image4.jpg", "assets://image5.jpg"};
 
@@ -319,6 +322,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void setAdapterForViewPager(ArrayList<CommonFragment> fragments) {
+        mDataList.add(new TimeLineModel("Set List Tasks", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         this.fragments = fragments;
         mainPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(), fragments, mainPresenter);
         viewPager.setAdapter(mainPagerAdapter);
@@ -340,6 +344,8 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     @Override
     public void addNewTaskIntoAdapter(Task task) {
         tasks.add(task);
+        mDataList.add(new TimeLineModel("Add New Task(taskid: " + String.valueOf(task.getId()) + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
+
         Log.d("log_task_AAAAlist_n",String.valueOf(task.getId()));
         if(fragments.size() == 0){
             ArrayList<CommonFragment> temp = new ArrayList<>();
@@ -354,7 +360,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void updateTask(Task task) {
-        Log.e("error_edit_task", "main " + String.valueOf(task.getId()));
+        mDataList.add(new TimeLineModel("Edit Task(taskid: " + String.valueOf(task.getId()) + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int i=0;
         while (true){
             if(i >= mainPagerAdapter.getFilterList().size()) break;
@@ -377,6 +383,23 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void updateStatusTask(int taskid, int status) {
+        String temp = "New Update Status Task(taskid: " + taskid + ",status: ";
+        switch (status){
+            case 0: {
+                temp += "New";
+                break;
+            }
+            case 1: {
+                temp += "Progress";
+                break;
+            }
+            case 2: {
+                temp += "Completed";
+                break;
+            }
+        }
+        temp += ")";
+        mDataList.add(new TimeLineModel(temp, MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int j=0;
         while(true){
             if(tasks.get(j).getId() == taskid){
@@ -401,6 +424,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void updateTypeTask(int taskid, String type) {
+        mDataList.add(new TimeLineModel("New Update Process(taskid: " + taskid + ",type: " + type + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int j=0;
         while(true){
             if(tasks.get(j).getId() == taskid){
@@ -424,6 +448,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void updateAssignTask(Assign assign) {
+        mDataList.add(new TimeLineModel("New Assign(taskid: " + String.valueOf(assign.getTask_id()) + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int j=0;
         while(true){
             if(j >= tasks.size()) break;
@@ -434,9 +459,6 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 while(true){
                     if(i >= mainPagerAdapter.getFilterList().size()) break;
                     if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == assign.getTask_id()){
-//                        Log.d("error_assign","MainActivity_2_2  " + String.valueOf(fragments.get(i).getTask().getAssign().size()));
-//                        fragments.get(i).getTask().getAssign().add(assign);
-//                        Log.d("error_assign","MainActivity_2_3  " + String.valueOf(fragments.get(i).getTask().getAssign().size()));
                         mainPagerAdapter.getFilterList().get(i).showingNewAssign(assign.getStaff().getName());
                         break;
                     }
@@ -451,12 +473,13 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void addListStaffs(List<Staff> staffs) {
+        mDataList.add(new TimeLineModel("Add List Staffs", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         MainActivity.staffs = staffs;
     }
 
     @Override
     public void addNewIssue(Issue issue) {
-
+        mDataList.add(new TimeLineModel("New issue(taskid: " + String.valueOf(issue.getId()) +")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int j=0;
         while(true){
             if(j >= tasks.size()) break;
@@ -487,10 +510,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.img_btn: {
-//                fragments.remove(0);
-//                tasks.remove(0);
-//                this.setAdapterForViewPager(fragments);
-                PopupTimeLine popupTimeLine = new PopupTimeLine(this);
+                PopupTimeLine popupTimeLine = new PopupTimeLine(this,mDataList);
                 popupTimeLine.show();
 
                 break;
