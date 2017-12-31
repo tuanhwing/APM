@@ -22,4 +22,6 @@ public interface DetailView {
 
     void updateTypeTask(int taskid, String type);
 
+    void updateStatusTaskError();
+
 }

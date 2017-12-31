@@ -22,7 +22,6 @@ import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -105,6 +104,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     //[END]Button show detail task
     @BindView(R.id.tv_assign)
     TextView tvAssign;
+    @BindView(R.id.tv_type)
+    TextView tvType;
 
 
     private Task task;
@@ -203,6 +204,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         for(Assign assign: task.getAssign()){
             tvAssign.append(assign.getStaff().getName() + "\n");
         }
+
+        tvType.setText("Process: " + task.getType());
 
         ViewCompat.setTransitionName(imageView, IMAGE_TRANSITION_NAME);
         ViewCompat.setTransitionName(tvTaskId, TASK_ID_TRANSITION_NAME);
@@ -439,7 +442,6 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
                 break;
             }
         }
-        Toast.makeText(DetailActivity.this,"update status task success", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -478,7 +480,13 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     public void updateTypeTask(int taskid, String type) {
         if(this.task.getId() == taskid){
             this.task.setType(type);
+            tvType.setText("Process: " + type);
         }
+    }
+
+    @Override
+    public void updateStatusTaskError() {
+        this.updateStatus(task.getId(),task.getStatus());
     }
 
 

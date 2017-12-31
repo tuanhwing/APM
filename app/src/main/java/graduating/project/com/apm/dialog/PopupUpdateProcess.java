@@ -64,7 +64,7 @@ public class PopupUpdateProcess extends Dialog implements View.OnClickListener, 
         tvCancel = (TextView) findViewById(R.id.tv_cancel);
 
         spinner = (Spinner) findViewById(R.id.spinner);
-        tvType.setText(typeTask);
+        tvType.setText("Current Process: " + typeTask);
         List<String> temps = new ArrayList<>();
         temps.add("IN");
         temps.add("PHOTO");

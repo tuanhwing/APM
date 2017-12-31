@@ -165,6 +165,7 @@ public class SocketEventDetail {
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
                     try {
+                        presenter.updateStatusTaskError();
                         Toast.makeText(activity,String.valueOf(data.getString("message")),Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -118,9 +118,13 @@
 
     <Button
         android:id="@+id/btn_detail"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:text="Detail"
+        android:background="@drawable/textview_detail_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1.5px"
