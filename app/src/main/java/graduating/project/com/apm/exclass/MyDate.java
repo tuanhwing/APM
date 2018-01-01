@@ -28,6 +28,21 @@ public class MyDate {
         return String.valueOf(DateFormat.format("dd-MM-yyyy", date));
     }
 
+    public static String getStringYMDHMSDL(String time){
+        if(time == null || time.length() <= 0) return "Date invalid!";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = format.parse(time);
+            Log.d("error_parse_datetime", date.toString());
+
+        } catch (ParseException e) {
+            Log.d("error_parse_datetime",String.valueOf(e.getMessage()));
+        }
+        if(date == null) return "Date invalid!";
+        return String.valueOf(DateFormat.format("yyyy-MM-dd", date)) + "\n" + String.valueOf(DateFormat.format("HH:mm:ss", date));
+    }
+
     public static String getStringYearMonthDayHMS(String time){
         if(time == null || time.length() <= 0) return "Date invalid!";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

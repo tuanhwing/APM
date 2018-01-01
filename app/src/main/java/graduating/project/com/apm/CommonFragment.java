@@ -139,7 +139,7 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         Log.e("error_edit_task_fill",String.valueOf(task.getId()));
         try {
             tvTaskId.setText(String.valueOf(task.getId()));
-            tvTimeRequire.setText(MyDate.getStringYearMonthDayHMS(task.getDeadline()));
+            tvTimeRequire.setText(MyDate.getStringYMDHMSDL(task.getDeadline()));
             tvTimeCreate.setText(MyDate.getStringYearMonthDay(task.getTime_created()));
             address5.setText("AMNT. " + String.valueOf(task.getCount()));
             tvAssign.setText(" ");

@@ -240,14 +240,14 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 .denyCacheImageMultipleSizesInMemory()
                 .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
                 .memoryCacheSize(2 * 1024 * 1024).memoryCacheSizePercentage(13) // default
-                .discCacheSize(50 * 1024 * 1024) // 缓冲大小
-                .discCacheFileCount(100) // 缓冲文件数目
+                .discCacheSize(50 * 1024 * 1024) // buffer size
+                .discCacheFileCount(100) //Number of buffer files
                 .discCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default
                 .imageDownloader(new BaseImageDownloader(this)) // default
                 .defaultDisplayImageOptions(DisplayImageOptions.createSimple()) // default
                 .writeDebugLogs().build();
 
-        // 2.单例ImageLoader类的初始化
+        // 2.Singleton ImageLoader class initialization
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(config);
     }

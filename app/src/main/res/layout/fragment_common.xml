@@ -33,12 +33,12 @@
                     android:id="@+id/tv_assign"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_crowd_of_users"
                     android:layout_marginLeft="10dp"
-                    android:text=""
+                    android:drawableLeft="@drawable/ic_crowd_of_users"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingRight="10dp"
+                    android:text=""
                     android:textColor="#333"
                     android:textSize="15sp" />
 
@@ -52,14 +52,14 @@
                     android:orientation="horizontal">
 
                     <!--<com.rey.material.widget.Slider-->
-                        <!--android:id="@+id/address5"-->
-                        <!--app:sl_minValue="0"-->
-                        <!--app:sl_maxValue="100"-->
-                        <!--app:sl_value="50"-->
-                        <!--style="@style/Material.Widget.Slider"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:gravity="center" />-->
+                    <!--android:id="@+id/address5"-->
+                    <!--app:sl_minValue="0"-->
+                    <!--app:sl_maxValue="100"-->
+                    <!--app:sl_value="50"-->
+                    <!--style="@style/Material.Widget.Slider"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:gravity="center" />-->
 
                     <TextView
                         android:id="@+id/address5"
@@ -99,28 +99,28 @@
                         android:id="@+id/head1"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/head1" />
+                        android:src="@drawable/user" />
 
                     <ImageView
                         android:id="@+id/head2"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="-10dp"
-                        android:src="@drawable/head1" />
+                        android:src="@drawable/user" />
 
                     <ImageView
                         android:id="@+id/head3"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="-10dp"
-                        android:src="@drawable/head1" />
+                        android:src="@drawable/user" />
 
                     <ImageView
                         android:id="@+id/head4"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="-10dp"
-                        android:src="@drawable/head1" />
+                        android:src="@drawable/user" />
 
                     <View
                         android:layout_width="0dp"
@@ -159,10 +159,11 @@
 
             <ImageView
                 android:id="@+id/img_status"
-                android:layout_margin="5dp"
-                android:layout_gravity="right"
                 android:layout_width="50dp"
-                android:layout_height="50dp" />
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:layout_margin="5dp" />
+
             <TextView
                 android:id="@+id/tv_taskid"
                 android:layout_width="wrap_content"

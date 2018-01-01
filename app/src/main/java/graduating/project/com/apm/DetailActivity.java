@@ -114,7 +114,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 
     private LinearLayout listContainer;
     private static final String[] headStrs = {HEAD1_TRANSITION_NAME, HEAD2_TRANSITION_NAME, HEAD3_TRANSITION_NAME, HEAD4_TRANSITION_NAME};
-    private static final int[] imageIds = {R.drawable.head1, R.drawable.head2, R.drawable.head3, R.drawable.head4};
+    private static final int[] imageIds = {R.drawable.user, R.drawable.head2, R.drawable.head3, R.drawable.head4};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -273,7 +273,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
             TextView tvCMTContent = (TextView) childView.findViewById(R.id.tv_cmt_content);
 
             tvCMTContent.setText(issues.get(i).getContent());
-            tvCMTName.setText("name");
+            tvCMTName.setText("Anonymous");
             tvCMTDate.setText(MyDate.getStringYearMonthDayHMSZ(issues.get(i).getDate()));
             if (i < headStrs.length) {
                 headView.setImageResource(imageIds[0]);
