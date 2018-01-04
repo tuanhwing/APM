@@ -6,8 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 
 /**
  * Created by Tuan on 31/12/2017.
@@ -20,7 +20,8 @@ public class VectorDrawableUtils {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             drawable = context.getResources().getDrawable(drawableResId, context.getTheme());
         } else {
-            drawable = VectorDrawableCompat.create(context.getResources(), drawableResId, context.getTheme());
+            drawable = ResourcesCompat.getDrawable(context.getResources(), drawableResId, null);
+//            drawable = VectorDrawableCompat.create(context.getResources(), drawableResId, context.getTheme());
         }
 
         return drawable;

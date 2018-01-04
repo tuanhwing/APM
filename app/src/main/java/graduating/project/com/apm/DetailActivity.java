@@ -114,7 +114,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 
     private LinearLayout listContainer;
     private static final String[] headStrs = {HEAD1_TRANSITION_NAME, HEAD2_TRANSITION_NAME, HEAD3_TRANSITION_NAME, HEAD4_TRANSITION_NAME};
-    private static final int[] imageIds = {R.drawable.user, R.drawable.head2, R.drawable.head3, R.drawable.head4};
+    private static final int[] imageIds = {R.drawable.user};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -301,7 +301,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
 
             case R.id.img_send: {
                 String content = String.valueOf(edIssue.getText());
-                if(!content.isEmpty() || content != null)
+                Log.d("send_issue_aaaa", String.valueOf(edIssue.getText()));
+                if(!content.isEmpty() || content != null && content.length() > 0)
                     try {
                         detailPresenter.sendNewIssueToServer(content,task.getId());
                     } catch (JSONException e) {
@@ -401,11 +402,12 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         TextView tvCMTName = (TextView) childView.findViewById(R.id.tv_cmt_name);
         TextView tvCMTDate = (TextView) childView.findViewById(R.id.tv_cmt_date);
         TextView tvCMTContent = (TextView) childView.findViewById(R.id.tv_cmt_content);
+               Log.d("error_new_issue","Detail1");
 
         tvCMTContent.setText(issue.getContent());
-        tvCMTName.setText("name");
+        tvCMTName.setText("Anonymous");
         headView.setImageResource(imageIds[0]);
-        tvCMTDate.setText(issue.getDate());
+        tvCMTDate.setText(MyDate.getStringYearMonthDayHMSZ(issue.getDate()));
 //        if (i < headStrs.length) {
 //            headView.setImageResource(imageIds[0]);
 //            ViewCompat.setTransitionName(headView, headStrs[i]);

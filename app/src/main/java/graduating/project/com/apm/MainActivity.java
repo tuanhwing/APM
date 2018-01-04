@@ -489,7 +489,8 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 while(true){
                     if(i >= mainPagerAdapter.getFilterList().size()) break;
                     if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == issue.getTask_id()){
-                        mainPagerAdapter.getFilterList().get(i).getTask().getIssues().add(issue);
+//                        mainPagerAdapter.getFilterList().get(i).getTask().getIssues().add(issue);
+                        Log.d("error_new_issue","MainActivity");
                         break;
                     }
                     i++;

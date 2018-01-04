@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ public class PopupTimeLine extends Dialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setCanceledOnTouchOutside(true);
         setContentView(R.layout.layout_timeline);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
