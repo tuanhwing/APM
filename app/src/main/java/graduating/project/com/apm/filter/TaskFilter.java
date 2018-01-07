@@ -64,7 +64,7 @@ public class TaskFilter extends Filter {
                     filteredTask.add(new CommonFragment(t));
                 } else {
                     for(Assign assign : t.getAssign()){
-                        if(assign.getStaff().getName().contains(constraint)) {
+                        if(assign.getStaff().getName().toLowerCase().contains(constraint)) {
                             filteredTask.add(new CommonFragment(t));
                             break;
                         }
