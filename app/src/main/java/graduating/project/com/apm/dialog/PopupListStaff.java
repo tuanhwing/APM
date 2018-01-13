@@ -51,10 +51,8 @@ public class PopupListStaff extends Dialog {
         listStaffs = (LinearLayout) findViewById(R.id.list_staff);
         for (int i = 0; i < staffs.size(); i++) {
 
-            View childView = layoutInflater.inflate(R.layout.detail_assign_item, null);
+            View childView = layoutInflater.inflate(R.layout.item_staff, null);
             TextView tvName = (TextView) childView.findViewById(R.id.tv_name);
-//            TextView tvTime = (TextView) childView.findViewById(R.id.tv_date_assign);
-//            tvTime.setText("sda");
             tvName.setText(staffs.get(i).getName());
             listStaffs.addView(childView);
         }

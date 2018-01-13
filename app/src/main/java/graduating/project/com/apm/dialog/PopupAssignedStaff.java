@@ -30,6 +30,8 @@ import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.socket.SocketSingleton;
 
+import static graduating.project.com.apm.MainActivity.tasks;
+
 /**
  * Created by Tuan on 06/12/2017.
  */
@@ -47,6 +49,7 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
     private TextView tvAssign;
     private TextView tvCancel;
     private LinearLayout listAssign;
+    private LinearLayout listStaffWorking;
     private Spinner spinner;
 
     public PopupAssignedStaff(Activity activity, List<Staff> staffs, List<Assign> assigns, int taskid, int process) {
@@ -72,6 +75,7 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
         tvAssign = (TextView) findViewById(R.id.tv_assign);
         tvCancel = (TextView) findViewById(R.id.tv_cancel);
         listAssign = (LinearLayout) findViewById(R.id.list_assign);
+        listStaffWorking = (LinearLayout) findViewById(R.id.list_staff_working);
         swActiveM = (Switch) findViewById(R.id.sw_active);
 //        btnAssign = (Button) findViewById(R.id.btn_assign);
         spinner = (Spinner) findViewById(R.id.spinner);
@@ -111,6 +115,24 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
             swActive.setOnCheckedChangeListener(switchChangedActive);
             listAssign.addView(childView);
         }
+
+        for(int j=0;j < staffs.size(); j++){//Staff
+            for(int i=0;i <tasks.size(); i++){//Task
+                boolean temp = false;
+                for(int k=0;k< tasks.get(i).getAssign().size(); k++){//Assign
+                    if(tasks.get(i).getAssign().get(k).getActive() == 1 && staffs.get(j).getId() == tasks.get(i).getAssign().get(k).getStaff().getId()){
+                        View childView = layoutInflater.inflate(R.layout.item_staff, null);
+                        TextView tvName = (TextView) childView.findViewById(R.id.tv_name);
+                        tvName.setText(staffs.get(j).getName() + "(TASKID:" + String.valueOf(tasks.get(i).getId()) + ")");
+                        listStaffWorking.addView(childView);
+                        temp=true;
+                        break;
+                    }
+                }
+                if(temp) break;
+            }
+        }
+
         spinner.setOnItemSelectedListener(this);
         tvAssign.setOnClickListener(this);
         tvCancel.setOnClickListener(this);

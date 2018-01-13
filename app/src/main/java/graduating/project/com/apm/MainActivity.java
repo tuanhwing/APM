@@ -459,8 +459,9 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         mDataList.add(new TimeLineModel("New Update Process(taskid: " + taskid + ",type: " + type + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int j=0;
         while(true){
+            if(j >= tasks.size()) break;
             if(tasks.get(j).getId() == taskid){
-                if(j >= tasks.size()) break;
+                for(int k=0; k<tasks.get(j).getAssign().size(); k++) tasks.get(j).getAssign().get(k).setActive(0);
                 tasks.get(j).setType(type);
                 if(type == 3) tasks.remove(j);
                 int i=0;
