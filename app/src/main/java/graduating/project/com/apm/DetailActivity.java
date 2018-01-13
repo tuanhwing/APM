@@ -21,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -82,7 +83,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     private ImageView imgSend;
     private ImageView imgAssign;
     private TextView address5;
-    private View address2;
+    private ImageView address2;
     private ImageView imageView;
     private RatingBar ratingBar;
     private RadioButton rdNew, rdProgress, rdCompleted;
@@ -102,10 +103,14 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     @BindView(R.id.img_show_detail)
     ImageView imgShowDetail;
     //[END]Button show detail task
-    @BindView(R.id.tv_assign)
-    TextView tvAssign;
+//    @BindView(R.id.tv_assign)
+//    TextView tvAssign;
     @BindView(R.id.tv_type)
     TextView tvType;
+    @BindView(R.id.ll_assign)
+    LinearLayout llAssing;
+    @BindView(R.id.sw_active)
+    Switch swActive;
 
 
     private Task task;
@@ -140,6 +145,8 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         SocketSingleton.getInstance().getSocket().on("server-send-update-status-task",socketEventDetail.getOnUpdateStatus());
         SocketSingleton.getInstance().getSocket().on("server-send-update-type-task",socketEventDetail.getOnUpadteType());
         SocketSingleton.getInstance().getSocket().on("response-edit-task",socketEventDetail.getOnUpdateTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-update-active-staff",socketEventDetail.getOnActiveStaff());
+        SocketSingleton.getInstance().getSocket().on("error-update-active-staff",socketEventDetail.getOnErrorActiveStaff());
         SocketSingleton.getInstance().getSocket().on("server-send-assign-to-all",socketEventDetail.getOnAssignTask());
         SocketSingleton.getInstance().getSocket().on("server-send-assign-result",socketEventDetail.getOnResultAssign());
         SocketSingleton.getInstance().getSocket().on("error-update-status-task",socketEventDetail.getOnErrorUpdateStatusTask());
@@ -183,6 +190,23 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         Log.e("error_edit_task", "Detail_" + String.valueOf(task.getFile()));
     }
 
+    private void setIconProcess() {
+        switch (task.getType()){
+            case 0: {
+                address2.setImageResource(R.drawable.print);
+                break;
+            }
+            case 1: {
+                address2.setImageResource(R.drawable.photo);
+                break;
+            }
+            case 2: {
+                address2.setImageResource(R.drawable.book);
+                break;
+            }
+        }
+    }
+
     private void fillContent() {
         String imageUrl = getIntent().getStringExtra(EXTRA_IMAGE_URL);
         ImageLoader.getInstance().displayImage(imageUrl, imageView);
@@ -194,16 +218,18 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         tvTimeRequire.setText(task.getTime_require());
         tvTimeCreate.setText(MyDate.getStringYearMonthDayHMS(task.getTime_created()));
         imgShowDetail.bringToFront();
+        setIconProcess();
 
         if(task.getStatus() == 0) cbNew.setChecked(true);
         if(task.getStatus() == 1) cbProgress.setChecked(true);
         if(task.getStatus() == 2) cbCompleted.setChecked(true);
 
 //        Temp text view Assign
-        Log.d("error_assign","Detail " + String.valueOf(task.getAssign().size()));
-        for(Assign assign: task.getAssign()){
-            tvAssign.append(assign.getStaff().getName() + "\n");
-        }
+//        Log.d("error_assign","Detail " + String.valueOf(task.getAssign().size()));
+//        for(Assign assign: task.getAssign()){
+//            tvAssign.append(assign.getStaff().getName() + "\n");
+//
+//        }
 
         tvType.setText("Process: " + task.getType());
 
@@ -212,7 +238,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         ViewCompat.setTransitionName(tvTimeRequire, TIME_REQUIRE_TRANSITION_NAME);
         ViewCompat.setTransitionName(address2, ADDRESS2_TRANSITION_NAME);
         ViewCompat.setTransitionName(tvTimeCreate, TIME_CREATE_TRANSITION_NAME);
-        ViewCompat.setTransitionName(tvAssign, ASSIGN_TRANSITION_NAME);
+        ViewCompat.setTransitionName(llAssing, ASSIGN_TRANSITION_NAME);
         ViewCompat.setTransitionName(address5, ADDRESS5_TRANSITION_NAME);
         ViewCompat.setTransitionName(ratingBar, RATINGBAR_TRANSITION_NAME);
     }
@@ -224,7 +250,9 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         SocketSingleton.getInstance().getSocket().off("server-send-update-status-task",socketEventDetail.getOnUpdateStatus());
         SocketSingleton.getInstance().getSocket().off("server-send-update-type-task",socketEventDetail.getOnUpadteType());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all",socketEventDetail.getOnAssignTask());
+        SocketSingleton.getInstance().getSocket().off("server-send-update-active-staff",socketEventDetail.getOnActiveStaff());
         SocketSingleton.getInstance().getSocket().off("response-edit-task",socketEventDetail.getOnUpdateTask());
+        SocketSingleton.getInstance().getSocket().off("error-update-active-staff",socketEventDetail.getOnErrorActiveStaff());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-result",socketEventDetail.getOnResultAssign());
         SocketSingleton.getInstance().getSocket().off("error-update-status-task",socketEventDetail.getOnErrorUpdateStatusTask());
         SocketSingleton.getInstance().getSocket().off("error-update-type-task",socketEventDetail.getOnErrorUpdateTypeTask());
@@ -249,7 +277,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         imageView = (ImageView) findViewById(R.id.image);
         tvTaskId = (TextView) findViewById(R.id.tv_taskid);
         tvTimeRequire = (TextView) findViewById(R.id.tv_time_require);
-        address2 = findViewById(R.id.address2);
+        address2 = (ImageView) findViewById(R.id.address2);
         tvTimeCreate = (TextView) findViewById(R.id.tv_time_create);
         address5 = (TextView) findViewById(R.id.address5);
         ratingBar = (RatingBar) findViewById(R.id.rating);
@@ -264,6 +292,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         LayoutInflater layoutInflater = LayoutInflater.from(this);
 
         List<Issue> issues = task.getIssues();
+        //Detail issue
         for (int i = 0; i < issues.size(); i++) {
             View childView = layoutInflater.inflate(R.layout.detail_list_item, null);
             listContainer.addView(childView);
@@ -281,6 +310,31 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
             }
         }
 
+        //Detail Assign
+        List<Assign> assigns = task.getAssign();
+        for(int i = 0; i<assigns.size(); i++){
+            View childView = layoutInflater.inflate(R.layout.assign_item, null);
+            llAssing.addView(childView);
+            TextView tvName = (TextView) childView.findViewById(R.id.tv_name);
+            ImageView imgProcess = (ImageView) childView.findViewById(R.id.img_process);
+            if(assigns.get(i).getProcess() == task.getType())
+                if(assigns.get(i).getActive() == 1) swActive.setChecked(true);
+            tvName.setText(assigns.get(i).getStaff().getName());
+            switch (assigns.get(i).getProcess()){
+                case 0: {
+                    imgProcess.setImageResource(R.drawable.print_black);
+                    break;
+                }
+                case 1: {
+                    imgProcess.setImageResource(R.drawable.photo_black);
+                    break;
+                }
+                case 2: {
+                    imgProcess.setImageResource(R.drawable.book_black);
+                    break;
+                }
+            }
+        }
 
        this.fillDetailTask();
     }
@@ -290,7 +344,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
         switch (v.getId()){
             case R.id.img_assign: {
 //                SocketSingleton.getInstance().getSocket().emit("get-list-staff");
-                PopupAssignedStaff cdd = new PopupAssignedStaff(DetailActivity.this, MainActivity.staffs, task.getAssign(),task.getId());
+                PopupAssignedStaff cdd = new PopupAssignedStaff(DetailActivity.this, MainActivity.staffs, task.getAssign(),task.getId(),task.getType());
                 cdd.show();
                 break;
             }
@@ -449,7 +503,30 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     @Override
     public void updateAssignTask(Assign assign) {
         task.getAssign().add(assign);
-        tvAssign.append(assign.getStaff().getName() + "\n");
+//        tvAssign.append(assign.getStaff().getName() + "\n");
+
+        if(task.getId() != assign.getTask_id()) return;
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View childView = layoutInflater.inflate(R.layout.assign_item, null);
+        llAssing.addView(childView);
+        TextView tvName = (TextView) childView.findViewById(R.id.tv_name);
+        ImageView imgProcess = (ImageView) childView.findViewById(R.id.img_process);
+        if(assign.getActive() == 1 && !swActive.isChecked()) swActive.setChecked(true);
+        tvName.setText(assign.getStaff().getName());
+        switch (assign.getProcess()){
+            case 0: {
+                imgProcess.setImageResource(R.drawable.print_black);
+                break;
+            }
+            case 1: {
+                imgProcess.setImageResource(R.drawable.photo_black);
+                break;
+            }
+            case 2: {
+                imgProcess.setImageResource(R.drawable.book_black);
+                break;
+            }
+        }
     }
 
     @Override
@@ -463,7 +540,7 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
             listInfoTask.addView(inforTaskView.getViewNameTask(task.getPaper_info(),"paper info"));
             listInfoTask.addView(inforTaskView.getViewNameTask(task.getOther_require(),"other require"));
             listInfoTask.addView(inforTaskView.getViewNameTask(task.getFile(), "file"));
-        listInfoTask.addView(inforTaskView.getViewNameTask(task.getType(), "type"));
+        listInfoTask.addView(inforTaskView.getViewNameTask(String.valueOf(task.getType()), "type"));
         //Temp detail info task view
     }
 
@@ -479,16 +556,40 @@ public class DetailActivity extends FragmentActivity implements DetailView, View
     }
 
     @Override
-    public void updateTypeTask(int taskid, String type) {
+    public void updateTypeTask(int taskid, int type) {
         if(this.task.getId() == taskid){
-            this.task.setType(type);
-            tvType.setText("Process: " + type);
+            try {
+                this.task.setType(type);
+                tvType.setText("Process: " + type);
+                setIconProcess();
+                finish();
+            } catch (Exception e){
+                Log.e("error_parseType", String.valueOf(e.getMessage()));
+            }
+
         }
     }
 
     @Override
     public void updateStatusTaskError() {
         this.updateStatus(task.getId(),task.getStatus());
+    }
+
+    @Override
+    public void updateActiveStaff(int taskid, int staffid, int process, int active) {
+        if(taskid != task.getId()) return;
+        int temp=0;
+        while(true) {
+            if(temp >= task.getAssign().size()) break;
+            if(task.getAssign().get(temp).getTask_id() == taskid &&
+                    task.getAssign().get(temp).getStaff_id() == staffid &&
+                    task.getAssign().get(temp).getProcess() == process) {
+                task.getAssign().get(temp).setActive(active);
+                if(active == 1 && !swActive.isChecked()) swActive.setChecked(true);
+                break;
+            }
+            temp++;
+        }
     }
 
 

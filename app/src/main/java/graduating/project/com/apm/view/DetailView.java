@@ -20,8 +20,10 @@ public interface DetailView {
 
     void updateTask(Task task);
 
-    void updateTypeTask(int taskid, String type);
+    void updateTypeTask(int taskid, int type);
 
     void updateStatusTaskError();
+
+    void updateActiveStaff(int taskid, int staffid, int process, int active);
 
 }

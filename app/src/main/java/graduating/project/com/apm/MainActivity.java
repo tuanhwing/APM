@@ -12,9 +12,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +55,7 @@ import graduating.project.com.apm.view.MainView;
 /**
  * Created by xmuSistone on 2016/9/18.
  */
-public class MainActivity extends FragmentActivity implements MainView, View.OnClickListener{
+public class MainActivity extends FragmentActivity implements MainView, View.OnClickListener, AdapterView.OnItemSelectedListener{
 
     //MVP
     private MainPresenter mainPresenter;
@@ -78,6 +81,8 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     @BindView(R.id.search_view)
     SearchView searchView;
 
+    private int filterTask = -1;
+
 
     private MainPagerAdapter mainPagerAdapter;
 
@@ -90,6 +95,9 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     //Temp
     SocketEvent socketEvent;
     public static List<Staff> staffs = new ArrayList<>();
+
+    @BindView(R.id.sp_options)
+    Spinner spinner;
 
     @BindView(R.id.rl_search)
     RelativeLayout rlSearch;
@@ -164,7 +172,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {// API >= 14
                     TransitionManager.beginDelayedTransition(searchContainer);
                 }
-
+                spinner.setSelection(0);
                 rlSearch.setVisibility(View.VISIBLE);
                 rlToolbar.setVisibility(View.GONE);
                 searchView.setIconified(false);
@@ -186,13 +194,22 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         });
 
 
+        //Snipper main
+        String[] data = {"All", "IN", "PHOTO", "BOOKBINDING"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                android.R.layout.simple_spinner_item, data);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
 
         socketEvent = new SocketEvent(MainActivity.this,mainPresenter);
         SocketSingleton.getInstance().getSocket().on("send-list-tasks-to-client",socketEvent.getOnListTask());
         SocketSingleton.getInstance().getSocket().on("server-send-list-staff", socketEvent.getOnListStaffs());
         SocketSingleton.getInstance().getSocket().on("server-send-new-task-to-all",socketEvent.getOnNewTask());
-        SocketSingleton.getInstance().getSocket().on("server-send-update-type-task",socketEvent.getGetOnUpadteTypeTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-update-type-task",socketEvent.getOnUpadteTypeTask());
         SocketSingleton.getInstance().getSocket().on("response-edit-task",socketEvent.getOnUpdateTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-update-active-staff",socketEvent.getOnActiveStaff());
+        SocketSingleton.getInstance().getSocket().on("error-update-active-staff",socketEvent.getOnErrorActiveStaff());
         SocketSingleton.getInstance().getSocket().on("connect-ok", socketEvent.getOnConnected());
         SocketSingleton.getInstance().getSocket().on("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
         SocketSingleton.getInstance().getSocket().on("server-send-assign-to-all", socketEvent.getOnAssignTask());
@@ -265,7 +282,9 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         SocketSingleton.getInstance().getSocket().off("send-list-tasks-to-client", socketEvent.getOnListTask());
         SocketSingleton.getInstance().getSocket().off("server-send-new-task-to-all",socketEvent.getOnNewTask());
         SocketSingleton.getInstance().getSocket().off("response-edit-task",socketEvent.getOnUpdateTask());
-        SocketSingleton.getInstance().getSocket().off("server-send-update-type-task",socketEvent.getGetOnUpadteTypeTask());
+        SocketSingleton.getInstance().getSocket().off("server-send-update-active-staff",socketEvent.getOnActiveStaff());
+        SocketSingleton.getInstance().getSocket().off("error-update-active-staff",socketEvent.getOnErrorActiveStaff());
+        SocketSingleton.getInstance().getSocket().off("server-send-update-type-task",socketEvent.getOnUpadteTypeTask());
         SocketSingleton.getInstance().getSocket().off("connect-ok", socketEvent.getOnConnected());
         SocketSingleton.getInstance().getSocket().off("server-send-update-status-task", socketEvent.getOnUpdateStatusTask());
         SocketSingleton.getInstance().getSocket().off("server-send-assign-to-all", socketEvent.getOnAssignTask());
@@ -291,6 +310,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     @Override
     public void fillTasksIntoViewPager(ArrayList<CommonFragment> fragments) {
         this.fragments = fragments;
+        Log.d("error_AAAAAMAIN",String.valueOf(fragments.size()));
 
         // 1. Animation parallax for ViewPager with setPageTransformer
         viewPager.setPageTransformer(false, new CustPagerTransformer(this));
@@ -317,6 +337,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
             }
         });
 
+        spinner.setOnItemSelectedListener(this);
 //        this.updateIndicatorTv();
     }
 
@@ -331,9 +352,14 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void updateIndicatorTv() {
-        int totalNum = viewPager.getAdapter().getCount();
-        int currentItem = viewPager.getCurrentItem() + 1;
-        indicatorTv.setText(Html.fromHtml("<font color='#12edf0'>" + currentItem + "</font>  /  " + totalNum));
+        try {
+            int totalNum = viewPager.getAdapter().getCount();
+            int currentItem = viewPager.getCurrentItem() + 1;
+            indicatorTv.setText(Html.fromHtml("<font color='#12edf0'>" + currentItem + "</font>  /  " + totalNum));
+        } catch (Exception e){
+            Log.e("error_updateIndicator", String.valueOf(e.getMessage()));
+        }
+
     }
 
     @Override
@@ -348,12 +374,17 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
         Log.d("log_task_AAAAlist_n",String.valueOf(task.getId()));
         if(fragments.size() == 0){
-            ArrayList<CommonFragment> temp = new ArrayList<>();
-            temp.add(new CommonFragment(task));
-            this.fillTasksIntoViewPager(temp);
+            if(filterTask == -1 || task.getType() == filterTask){
+                ArrayList<CommonFragment> temp = new ArrayList<>();
+                temp.add(new CommonFragment(task));
+                this.fillTasksIntoViewPager(temp);
+            }
         }else {
-            fragments.add(new CommonFragment(task));
-            mainPagerAdapter.notifyDataSetChanged();
+            if(filterTask == -1 || task.getType() == filterTask) {
+                fragments.add(new CommonFragment(task));
+                mainPagerAdapter.notifyDataSetChanged();
+            }
+
         }
         this.updateIndicatorTv();
     }
@@ -363,7 +394,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         mDataList.add(new TimeLineModel("Edit Task(taskid: " + String.valueOf(task.getId()) + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int i=0;
         while (true){
-            if(i >= mainPagerAdapter.getFilterList().size()) break;
+            if(i >= tasks.size()) break;
             if(tasks.get(i).getId() == task.getId()) {
                 tasks.set(i,task);
             }
@@ -378,6 +409,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
             }
             i++;
         }
+        if(i >= mainPagerAdapter.getFilterList().size()) addNewTaskIntoAdapter(task);
 
     }
 
@@ -423,27 +455,78 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
     }
 
     @Override
-    public void updateTypeTask(int taskid, String type) {
+    public void updateTypeTask(int taskid, int type) {
         mDataList.add(new TimeLineModel("New Update Process(taskid: " + taskid + ",type: " + type + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int j=0;
         while(true){
             if(tasks.get(j).getId() == taskid){
                 if(j >= tasks.size()) break;
                 tasks.get(j).setType(type);
+                if(type == 3) tasks.remove(j);
                 int i=0;
-                while(true){
-                    if(i >= mainPagerAdapter.getFilterList().size()) break;
-                    if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == taskid){
-                        if(i >= mainPagerAdapter.getFilterList().size()) break;
-                        mainPagerAdapter.getFilterList().get(i).getTask().setType(type);
+                while(true){//Remove current fragment
+                    if(i>=fragments.size()) break;
+                    if(fragments.get(i).getTask().getId() == taskid){
+                        switch (filterTask) {
+                            case -1: {
+                                if(type >= 3) {
+                                    mainPagerAdapter.getFilterList().get(i).getTask().setType(type);
+                                    mainPagerAdapter.getFilterList().remove(i);
+                                    mainPagerAdapter.notifyDataSetChanged();
+                                }
+                                break;
+                            }
+                            default: {
+                                if(type != filterTask) {
+                                    mainPagerAdapter.getFilterList().get(i).getTask().setType(type);
+                                    mainPagerAdapter.getFilterList().remove(i);
+                                    mainPagerAdapter.notifyDataSetChanged();
+                                }
+                                break;
+                            }
+                        }
                         break;
                     }
                     i++;
+//                    if(i >= tasks.size()) break;
+//                    if(filterTask >= 0){
+//                        if(filterTask == type) {
+//                            if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == taskid){
+//                                mainPagerAdapter.getFilterList().add(new CommonFragment(tasks.get(i)));
+//                                mainPagerAdapter.notifyDataSetChanged();
+//                            }
+//                        } else {
+//                            if(mainPagerAdapter.getFilterList().size() > 0){
+//
+//                            }
+//                            if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == taskid){
+//                                mainPagerAdapter.getFilterList().get(i).getTask().setType(type);
+//                                mainPagerAdapter.getFilterList().remove(i);
+//                                mainPagerAdapter.notifyDataSetChanged();
+//                            }
+//                        }
+//                    } else {
+//                        if(type >= 3){
+//                            if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == taskid){
+//                                mainPagerAdapter.getFilterList().get(i).getTask().setType(type);
+//                                mainPagerAdapter.getFilterList().remove(i);
+//                                mainPagerAdapter.notifyDataSetChanged();
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//                    i++;
+                }
+                if(filterTask == type){
+                    fragments.add(new CommonFragment(tasks.get(j)));
+                    mainPagerAdapter.notifyDataSetChanged();
                 }
                 break;
             }
             j++;
         }
+        this.updateIndicatorTv();
     }
 
     @Override
@@ -506,6 +589,28 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         viewPager.setCurrentItem(position);
     }
 
+    @Override
+    public void updateActiveStaff(int taskid, int staffid, int process, int active) {
+        mDataList.add(new TimeLineModel("Update active staff(taskid: " + String.valueOf(taskid) + "|" + "staffid: " + String.valueOf(staffid) + "|" + "active:" + String.valueOf(process) +")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
+        int temp=0;
+        while(true) {
+            if(temp >= tasks.size()) break;
+            Task temp1 = tasks.get(temp);
+            int temp2 =0;
+            while(true){
+                if(temp2 >= temp1.getAssign().size()) break;
+                if(temp1.getAssign().get(temp2).getTask_id() == taskid &&
+                        temp1.getAssign().get(temp2).getStaff_id() == staffid &&
+                        temp1.getAssign().get(temp2).getProcess() == process) {
+                    temp1.getAssign().get(temp2).setActive(active);
+                    break;
+                }
+                temp2++;
+            }
+            temp++;
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -534,5 +639,36 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                 break;
             }
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+            case 0: {
+                this.setAdapterForViewPager(mainPresenter.getAllTasks(tasks));
+                filterTask = -1;
+                break;
+            }
+            case 1: {
+                this.setAdapterForViewPager(mainPresenter.getAllTasksType(tasks,0));
+                filterTask = 0;
+                break;
+            }
+            case 2: {
+                this.setAdapterForViewPager(mainPresenter.getAllTasksType(tasks,1));
+                filterTask = 1;
+                break;
+            }
+            case 3: {
+                this.setAdapterForViewPager(mainPresenter.getAllTasksType(tasks,2));
+                filterTask = 2;
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

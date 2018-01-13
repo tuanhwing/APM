@@ -43,11 +43,15 @@ public class DetailPresenter implements DetailResult {
         view.updateTask(task);
     }
 
-    public void updateTypeTask(int taskid, String type) {
+    public void updateTypeTask(int taskid, int type) {
         view.updateTypeTask(taskid, type);
     }
 
     public void updateStatusTaskError(){
         view.updateStatusTaskError();
+    }
+
+    public void updateActiveStaff(int taskid, int staffid, int process, int active) {
+        view.updateActiveStaff(taskid, staffid, process, active);
     }
 }

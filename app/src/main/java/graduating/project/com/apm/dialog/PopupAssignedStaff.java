@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import java.util.List;
 
 import graduating.project.com.apm.R;
 import graduating.project.com.apm.exclass.MyDate;
+import graduating.project.com.apm.exclass.SwitchChangedActive;
 import graduating.project.com.apm.object.Assign;
 import graduating.project.com.apm.object.Staff;
 import graduating.project.com.apm.socket.SocketSingleton;
@@ -39,18 +41,21 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
     private List<Assign> assigns;
     private int staffid;
     private int taskid;
+    private int process;
 
+    private Switch swActiveM;
     private TextView tvAssign;
     private TextView tvCancel;
     private LinearLayout listAssign;
     private Spinner spinner;
 
-    public PopupAssignedStaff(Activity activity, List<Staff> staffs, List<Assign> assigns, int taskid) {
+    public PopupAssignedStaff(Activity activity, List<Staff> staffs, List<Assign> assigns, int taskid, int process) {
         super(activity);
         this.activity = activity;
         this.staffs = staffs;
         this.assigns = assigns;
         this.taskid = taskid;
+        this.process = process;
     }
 
     @Override
@@ -67,6 +72,7 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
         tvAssign = (TextView) findViewById(R.id.tv_assign);
         tvCancel = (TextView) findViewById(R.id.tv_cancel);
         listAssign = (LinearLayout) findViewById(R.id.list_assign);
+        swActiveM = (Switch) findViewById(R.id.sw_active);
 //        btnAssign = (Button) findViewById(R.id.btn_assign);
         spinner = (Spinner) findViewById(R.id.spinner);
         List<String> temps = new ArrayList<>();
@@ -82,8 +88,27 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
             View childView = layoutInflater.inflate(R.layout.detail_assign_item, null);
             TextView tvName = (TextView) childView.findViewById(R.id.tv_name);
             TextView tvTime = (TextView) childView.findViewById(R.id.tv_date_assign);
+            Switch swActive = (Switch) childView.findViewById(R.id.sw_active);
             tvTime.setText(MyDate.getStringYearMonthDayHMSZ(assigns.get(i).getDate()));
             tvName.setText(assigns.get(i).getStaff().getName());
+            switch (assigns.get(i).getProcess()) {
+                case 0: {
+                    tvName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.print_black_15,0,0,0);
+                    break;
+                }
+                case 1: {
+                    tvName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.photo_black_15,0,0,0);
+                    break;
+                }
+                case 2: {
+                    tvName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.book_black_15,0,0,0);
+                    break;
+                }
+            }
+            if(assigns.get(i).getProcess() != process) swActive.setVisibility(View.INVISIBLE);
+            if(assigns.get(i).getActive() == 1) swActive.setChecked(true);
+            SwitchChangedActive switchChangedActive = new SwitchChangedActive(assigns.get(i));
+            swActive.setOnCheckedChangeListener(switchChangedActive);
             listAssign.addView(childView);
         }
         spinner.setOnItemSelectedListener(this);
@@ -105,6 +130,10 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
                 try {
                     json.put("taskid",taskid);
                     json.put("staffid",staffid);
+                    json.put("type",process);
+                    int active = 0;
+                    if(swActiveM.isChecked()) active=1;
+                    json.put("active",active);
                 } catch (JSONException e) {
                     Log.d("assign-staff-for-task",String.valueOf(e.getMessage()));
                 }
@@ -139,4 +168,5 @@ public class PopupAssignedStaff extends Dialog implements View.OnClickListener, 
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 }

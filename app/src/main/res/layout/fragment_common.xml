@@ -193,7 +193,7 @@
                     android:layout_height="22dp"
                     android:layout_centerInParent="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/gps" />
+                    android:src="@drawable/print" />
 
                 <TextView
                     android:id="@+id/tv_time_create"

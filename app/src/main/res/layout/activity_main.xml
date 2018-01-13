@@ -5,7 +5,6 @@
     android:background="@drawable/background">
 
     <!--1. 中间可滑动的viewPager-->
-
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
@@ -115,13 +114,34 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/search" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <Spinner
+                    android:id="@+id/sp_options"
                     android:layout_centerInParent="true"
-                    android:text="TASKS"
-                    android:textColor="#ffffff" />
+                    android:layout_width="200dp"
+                    android:dropDownWidth="200dp"
+                    android:background="@color/whiteInit"
+                    android:layout_height="wrap_content" />
+                <!--<graduating.project.com.apm.exclass.CustomSpinner-->
+                    <!--android:id="@+id/sp_options"-->
+                    <!--style="@style/Widget.AppCompat.Spinner"-->
+                    <!--android:layout_margin="10dp"-->
+                    <!--android:layout_width="200dp"-->
+                    <!--android:dropDownWidth="200dp"-->
+                    <!--android:layout_height="?attr/dropdownListPreferredItemHeight"-->
+                    <!--android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"-->
+                    <!--android:background="@drawable/spinner_bg"-->
+                    <!--android:popupBackground="@android:color/white"-->
+                    <!--android:stateListAnimator="@drawable/spinner_sla"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:paddingRight="14dp"-->
+                    <!--android:popupElevation="3dp" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:text="TASKS"-->
+                    <!--android:textColor="#ffffff" />-->
 
                 <View
                     android:id="@+id/v_close"
@@ -131,6 +151,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
                     android:background="@drawable/close" />
+
 
             </RelativeLayout>
 

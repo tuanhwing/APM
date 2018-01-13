@@ -21,7 +21,7 @@ public class Task implements Serializable {
     private String paper_info;
     private String other_require;
     private String file;
-    private String type;
+    private int type;
     private List<Issue> issues;
     private List<Assign> assign;
 
@@ -41,7 +41,7 @@ public class Task implements Serializable {
                 String paper_info,
                 String other_require,
                 String file,
-                String type,
+                int type,
                 List<Issue> issues,
                 List<Assign> assign) {
         this.id = id;
@@ -174,11 +174,11 @@ public class Task implements Serializable {
         this.assign = assign;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

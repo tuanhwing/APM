@@ -276,7 +276,28 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:padding="5dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/img_update"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/image_update_type_selector"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/tv_type"
+                            android:text="PROCESS: None"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:textAlignment="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
 
                     <CheckBox
                         android:id="@+id/cb_new"
@@ -284,9 +305,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="New"
+                        android:text="NOTSTARTED"
+                        android:scaleX="0.60"
+                        android:scaleY="0.60"
                         android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="10sp" />
 
                     <CheckBox
                         android:id="@+id/cb_progress"
@@ -294,9 +317,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="Progress"
+                        android:scaleX="0.60"
+                        android:scaleY="0.60"
+                        android:text="IN PROGRESS"
                         android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="10sp" />
 
                     <CheckBox
                         android:id="@+id/cb_completed"
@@ -304,9 +329,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="Completed"
+                        android:text="COMPLETED"
+                        android:scaleX="0.60"
+                        android:scaleY="0.60"
                         android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="10sp" />
 
                 </LinearLayout>
 
@@ -317,9 +344,9 @@
                     android:layout_below="@id/radioGroup">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_marginRight="20dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -352,23 +379,6 @@
                             android:layout_marginTop="10dp"
                             android:numStars="5"
                             android:rating="4.5" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <ImageView
-                                android:id="@+id/img_update"
-                                android:layout_margin="5dp"
-                                android:src="@drawable/image_update_type_selector"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                            <TextView
-                                android:id="@+id/tv_type"
-                                android:text="Process: None"
-                                android:gravity="center"
-                                android:textAlignment="center"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
-                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -384,22 +394,42 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical">
 
+                            <TextView
+                                android:id="@+id/textView2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="ASSIGN"
+                                android:textAlignment="center"
+                                android:textColor="@color/black"
+                                android:textSize="8dp" />
+
                             <ImageView
                                 android:id="@+id/img_assign"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
                                 android:src="@drawable/image_assign_selector" />
+                            <Switch
+                                android:id="@+id/sw_active"
+                                android:enabled="false"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
                         </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/tv_assign"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="5dp"
+                        <LinearLayout
+                            android:id="@+id/ll_assign"
                             android:layout_weight="1"
-                            android:maxLines="3"
-                            android:textColor="@color/black" />
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"/>
+
+                        <!--<TextView-->
+                            <!--android:id="@+id/tv_assign"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:layout_marginLeft="5dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:maxLines="3"-->
+                            <!--android:textColor="@color/black" />-->
 
 
                     </LinearLayout>

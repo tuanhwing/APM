@@ -98,7 +98,7 @@ public class SocketEventDetail {
                     JSONObject data = (JSONObject) args[0];
                     try {
                         int taskid = data.getInt("taskid");
-                        String type = data.getString("type");
+                        int type = data.getInt("type");
                         presenter.updateTypeTask(taskid, type);
                     } catch (JSONException e) {
                         Log.e("error_update_type",String.valueOf(e.getMessage()));
@@ -194,6 +194,45 @@ public class SocketEventDetail {
         }
     };
 
+    private Emitter.Listener onActiveStaff = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        int taskid = data.getInt("taskid");
+                        int staffid = data.getInt("staffid");
+                        int process = data.getInt("type");
+                        int active = data.getInt("active");
+                        presenter.updateActiveStaff(taskid,staffid,process,active);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onErrorActiveStaff = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Toast.makeText(activity,String.valueOf(data.getString("message")),Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
     public SocketEventDetail(){
     }
 
@@ -223,4 +262,8 @@ public class SocketEventDetail {
     public Emitter.Listener getOnUpadteType() { return onUpadteType; }
 
     public Emitter.Listener getOnErrorUpdateTypeTask() { return onErrorUpdateTypeTask; }
+
+    public Emitter.Listener getOnActiveStaff() { return onActiveStaff;}
+
+    public Emitter.Listener getOnErrorActiveStaff() { return onErrorActiveStaff; }
 }

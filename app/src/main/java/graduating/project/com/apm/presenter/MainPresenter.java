@@ -68,7 +68,7 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
         view.updateStatusTask(taskid,status);
     }
 
-    public void updateTypeTask(int taskid, String type) {
+    public void updateTypeTask(int taskid, int type) {
         view.updateTypeTask(taskid,type);
     }
 
@@ -84,8 +84,20 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
         view.setAdapterForViewPager(fragments);
     }
 
+    public ArrayList<CommonFragment> getAllTasks(ArrayList<Task> tasks) {
+        return model.getAllTasksToListCommonFragment(tasks);
+    }
+
+    public ArrayList<CommonFragment> getAllTasksType(ArrayList<Task> tasks, int type){
+        return model.getAllTasksTypeToListCommonFragment(tasks, type);
+    }
+
     public void setCurrentItemViewpager(int position){
         view.setCurrentItemViewpager(position);
+    }
+
+    public void updateActiveStaff(int taskid,int staffid, int process, int active) {
+        view.updateActiveStaff(taskid,staffid,process,active);
     }
 
     @Override
@@ -104,7 +116,7 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
     public void onJsonToTasksCompleted(ArrayList<Task> tasks) {
         view.saveListTasks(tasks);
         view.fillTasksIntoViewPager(model.convertTasksToCommonFragment(tasks));
-        view.updateIndicatorTv();
+//        view.updateIndicatorTv();
     }
 
     @Override

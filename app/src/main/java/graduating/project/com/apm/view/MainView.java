@@ -32,7 +32,7 @@ public interface MainView {
 
     void updateStatusTask(int taskid, int status);
 
-    void updateTypeTask(int taskid, String type);
+    void updateTypeTask(int taskid, int type);
 
     void updateAssignTask(Assign assign);
 
@@ -42,5 +42,5 @@ public interface MainView {
 
     void setCurrentItemViewpager(int position);
 
-
+    void updateActiveStaff(int taskid, int staffid, int process,int active);
 }

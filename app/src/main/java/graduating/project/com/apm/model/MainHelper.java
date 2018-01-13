@@ -80,4 +80,22 @@ public class MainHelper {
         }
         return fragments;
     }
+
+    public ArrayList<CommonFragment> getAllTasksToListCommonFragment(ArrayList<Task> tasks){
+        ArrayList<CommonFragment> results = new ArrayList<>();
+        for( Task task: tasks){
+            results.add(new CommonFragment(task));
+        }
+        return results;
+    }
+
+    public ArrayList<CommonFragment> getAllTasksTypeToListCommonFragment(ArrayList<Task> tasks, int type){
+        ArrayList<CommonFragment> results = new ArrayList<>();
+        for( Task task: tasks){
+            if(task.getType() == type)
+                results.add(new CommonFragment(task));
+        }
+        return results;
+    }
+
 }

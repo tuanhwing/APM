@@ -33,7 +33,7 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
     private ImageView imageView;
     private TextView tvTaskId, tvTimeRequire, tvTimeCreate, tvAssign;
     private TextView address5;
-    private View address2;
+    private ImageView address2;
     private RatingBar ratingBar;
     private ImageView imgStatus;
     private View head1, head2, head3, head4;
@@ -63,7 +63,7 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         ImageLoader.getInstance().displayImage(imageUrl, imageView);
         tvTaskId = (TextView) dragLayout.findViewById(R.id.tv_taskid);
         tvTimeRequire = (TextView) dragLayout.findViewById(R.id.tv_time_require);
-        address2 = dragLayout.findViewById(R.id.address2);
+        address2 = (ImageView) dragLayout.findViewById(R.id.address2);
         tvTimeCreate = (TextView) dragLayout.findViewById(R.id.tv_time_create);
         tvAssign = (TextView) dragLayout.findViewById(tv_assign);
         address5 = (TextView) dragLayout.findViewById(R.id.address5);
@@ -143,6 +143,7 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
             tvTimeCreate.setText(MyDate.getStringYearMonthDay(task.getTime_created()));
             address5.setText("AMNT. " + String.valueOf(task.getCount()));
             tvAssign.setText(" ");
+            setIconProcess();
 //        Log.d("error_assign","Common " + String.valueOf(task.getAssign().size()));
             for(Assign assign : task.getAssign()){
                 tvAssign.append(" | " + assign.getStaff().getName());
@@ -153,6 +154,23 @@ public class CommonFragment extends Fragment implements DragLayout.GotoDetailLis
         }
 
 
+    }
+
+    private void setIconProcess() {
+        switch (task.getType()){
+            case 0: {
+                address2.setImageResource(R.drawable.print);
+                break;
+            }
+            case 1: {
+                address2.setImageResource(R.drawable.photo);
+                break;
+            }
+            case 2: {
+                address2.setImageResource(R.drawable.book);
+                break;
+            }
+        }
     }
 
     @Override

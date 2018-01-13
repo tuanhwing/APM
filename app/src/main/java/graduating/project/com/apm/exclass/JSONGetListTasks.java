@@ -38,6 +38,7 @@ public class JSONGetListTasks extends AsyncTask<Object, Void, ArrayList<Task>> {
                     Log.d("json_async_aaa", String.valueOf(object));
                     tasks.add(gson.fromJson(object.toString(), Task.class));
                 }
+                Log.d("json_async_aaa123",String.valueOf(tasks.size()));
             } catch (JSONException e) {
                 listener.onJsonToTasksFailed(e.getMessage());
             }
