@@ -207,6 +207,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         SocketSingleton.getInstance().getSocket().on("server-send-list-staff", socketEvent.getOnListStaffs());
         SocketSingleton.getInstance().getSocket().on("server-send-new-task-to-all",socketEvent.getOnNewTask());
         SocketSingleton.getInstance().getSocket().on("server-send-update-type-task",socketEvent.getOnUpadteTypeTask());
+        SocketSingleton.getInstance().getSocket().on("server-send-revert-task",socketEvent.getOnRevertTask());
         SocketSingleton.getInstance().getSocket().on("response-edit-task",socketEvent.getOnUpdateTask());
         SocketSingleton.getInstance().getSocket().on("server-send-update-active-staff",socketEvent.getOnActiveStaff());
         SocketSingleton.getInstance().getSocket().on("error-update-active-staff",socketEvent.getOnErrorActiveStaff());
@@ -283,6 +284,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
         SocketSingleton.getInstance().getSocket().off("server-send-new-task-to-all",socketEvent.getOnNewTask());
         SocketSingleton.getInstance().getSocket().off("response-edit-task",socketEvent.getOnUpdateTask());
         SocketSingleton.getInstance().getSocket().off("server-send-update-active-staff",socketEvent.getOnActiveStaff());
+        SocketSingleton.getInstance().getSocket().off("server-send-revert-task",socketEvent.getOnRevertTask());
         SocketSingleton.getInstance().getSocket().off("error-update-active-staff",socketEvent.getOnErrorActiveStaff());
         SocketSingleton.getInstance().getSocket().off("server-send-update-type-task",socketEvent.getOnUpadteTypeTask());
         SocketSingleton.getInstance().getSocket().off("connect-ok", socketEvent.getOnConnected());
@@ -391,25 +393,35 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 
     @Override
     public void updateTask(Task task) {
-        mDataList.add(new TimeLineModel("Edit Task(taskid: " + String.valueOf(task.getId()) + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
         int i=0;
         while (true){
             if(i >= tasks.size()) break;
             if(tasks.get(i).getId() == task.getId()) {
-                tasks.set(i,task);
+                tasks.set(i, task);
+
+                int j = 0;
+                while (true) {
+                    if (j >= mainPagerAdapter.getFilterList().size()) break;
+                    if (mainPagerAdapter.getFilterList().get(j).getTask().getId() == task.getId()) {
+                        mainPagerAdapter.getFilterList().get(j).setTask(task);
+                        mainPagerAdapter.getFilterList().get(j).fillContentFragment();
+                        mDataList.add(new TimeLineModel("Edit Task(taskid: " + String.valueOf(task.getId()) + ")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
+                        Toast.makeText(MainActivity.this, "edit task", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    j++;
+                }
+                break;
             }
-            if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == task.getId()){
-//                Log.e("error_edit_task", "main_compare_" + String.valueOf(fragments.get(i).getTask().getId()));
-                mainPagerAdapter.getFilterList().get(i).setTask(task);
-                mainPagerAdapter.getFilterList().get(i).fillContentFragment();
-//                fragments.get(i).setTask(task);
-//                fragments.get(i).fillContentFragment();
-                Toast.makeText(MainActivity.this, "edit task", Toast.LENGTH_SHORT).show();
-                return;
-            }
+//            if(mainPagerAdapter.getFilterList().get(i).getTask().getId() == task.getId()){
+//                mainPagerAdapter.getFilterList().get(i).setTask(task);
+//                mainPagerAdapter.getFilterList().get(i).fillContentFragment();
+//                Toast.makeText(MainActivity.this, "edit task", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
             i++;
         }
-        if(i >= mainPagerAdapter.getFilterList().size()) addNewTaskIntoAdapter(task);
+        if(i >= tasks.size()) addNewTaskIntoAdapter(task);
 
     }
 
@@ -470,7 +482,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                     if(fragments.get(i).getTask().getId() == taskid){
                         switch (filterTask) {
                             case -1: {
-                                if(type >= 3) {
+                                if(type >= 3 && i < mainPagerAdapter.getFilterList().size()) {
                                     mainPagerAdapter.getFilterList().get(i).getTask().setType(type);
                                     mainPagerAdapter.getFilterList().remove(i);
                                     mainPagerAdapter.notifyDataSetChanged();
@@ -478,7 +490,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
                                 break;
                             }
                             default: {
-                                if(type != filterTask) {
+                                if(type != filterTask && i < mainPagerAdapter.getFilterList().size()) {
                                     mainPagerAdapter.getFilterList().get(i).getTask().setType(type);
                                     mainPagerAdapter.getFilterList().remove(i);
                                     mainPagerAdapter.notifyDataSetChanged();
@@ -519,7 +531,7 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
 //
 //                    i++;
                 }
-                if(filterTask == type){
+                if(filterTask == type ){
                     fragments.add(new CommonFragment(tasks.get(j)));
                     mainPagerAdapter.notifyDataSetChanged();
                 }
@@ -610,6 +622,12 @@ public class MainActivity extends FragmentActivity implements MainView, View.OnC
             }
             temp++;
         }
+    }
+
+    @Override
+    public void revertTask(Task task) {
+        mDataList.add(new TimeLineModel("Revert Task(taskid: " + String.valueOf(task.getId()) +")", MyDate.getYMDHMSNow(System.currentTimeMillis())));//Add timeline
+        this.updateTask(task);
     }
 
 

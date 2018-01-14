@@ -100,6 +100,10 @@ public class MainPresenter implements MainResult, OnJsonToTasksCompleted,OnJsonT
         view.updateActiveStaff(taskid,staffid,process,active);
     }
 
+    public void revertTask(Task task) {
+        view.revertTask(task);
+    }
+
     @Override
     public void onGetTaskSucess(ArrayList<Task> tasks) {
         view.saveListTasks(tasks);

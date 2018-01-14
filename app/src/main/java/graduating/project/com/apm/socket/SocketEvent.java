@@ -223,7 +223,26 @@ public class SocketEvent {
             });
         }
     };
-    
+
+    private Emitter.Listener onRevertTask = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Gson gson = new Gson();
+                    for (Object temp : args){
+                        JSONObject data = (JSONObject) temp;
+                        try {
+                            presenter.revertTask(gson.fromJson(data.getString("content"),Task.class));
+                        } catch (JSONException e) {
+                            Log.e("error_edit_task",String.valueOf(e.getMessage()));
+                        }
+                    }
+                }
+            });
+        }
+    };
 
     public SocketEvent(){
     }
@@ -268,5 +287,9 @@ public class SocketEvent {
 
     public Emitter.Listener getOnErrorActiveStaff() {
         return onErrorActiveStaff;
+    }
+
+    public Emitter.Listener getOnRevertTask() {
+        return onRevertTask;
     }
 }

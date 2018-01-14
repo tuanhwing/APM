@@ -43,4 +43,6 @@ public interface MainView {
     void setCurrentItemViewpager(int position);
 
     void updateActiveStaff(int taskid, int staffid, int process,int active);
+
+    void revertTask(Task task);
 }
