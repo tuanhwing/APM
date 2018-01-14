@@ -49,7 +49,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter implements Filte
     @Override
     public Fragment getItem(int position) {
         CommonFragment fragment = fragments.get(position);
-        fragment.bindData(imageArray[0]);
+        fragment.bindData(imageArray[fragments.get(position).getTask().getType()]);
         return fragment;
     }
 
